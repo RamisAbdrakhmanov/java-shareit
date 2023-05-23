@@ -7,8 +7,6 @@ import ru.practicum.shareit.exception.UserValidException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
 @Repository
 public class UserDao {
@@ -36,15 +34,15 @@ public class UserDao {
             if (us.getEmail().equals(user.getEmail()) && !(us.getId().equals(user.getId()))) {
                 throw new UserValidException("email is busy");
             }
-            if(us.getId().equals(user.getId())){
+            if (us.getId().equals(user.getId())) {
                 updateUser = us;
             }
         }
         assert updateUser != null;
-        if(user.getEmail() != null){
+        if (user.getEmail() != null) {
             updateUser.setEmail(user.getEmail());
         }
-        if(user.getName() != null){
+        if (user.getName() != null) {
             updateUser.setName(user.getName());
         }
         return updateUser;
@@ -52,7 +50,7 @@ public class UserDao {
 
     public User getUser(Integer userId) {
         User user = users.stream().filter(u -> u.getId().equals(userId)).findFirst().orElse(null);
-        if(user == null){
+        if (user == null) {
             throw new NotFoundException("User is not found");
         }
         return user;
