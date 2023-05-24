@@ -31,17 +31,15 @@ public class ItemController {
     @PostMapping
     public ItemDto addItem(@RequestHeader("X-Sharer-User-Id") Integer userId,
                            @Valid @RequestBody ItemDto itemDto) {
-        itemDto.setOwnerId(userId);
-        return itemService.addItem(itemDto);
+        return itemService.addItem(itemDto, userId);
     }
 
     @PatchMapping("/{itemId}")
     public ItemDto updateItem(@PathVariable Integer itemId,
                               @RequestHeader("X-Sharer-User-Id") Integer userId,
                               @RequestBody ItemDto itemDto) {
-        itemDto.setOwnerId(userId);
         itemDto.setId(itemId);
-        return itemService.updateItem(itemDto);
+        return itemService.updateItem(itemDto, userId);
     }
 
     @DeleteMapping("/{itemId}")

@@ -2,8 +2,10 @@ package ru.practicum.shareit.user;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.user.dto.UserDto;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -12,23 +14,23 @@ public class UserServiceImp implements UserService {
     private UserDao userDao;
 
     @Override
-    public List<User> getUsers() {
-        return userDao.getUsers();
+    public List<UserDto> getUsers() {
+        return userDao.getUsers().stream().map(UserMapper::toUserDto).collect(Collectors.toList());
     }
 
     @Override
-    public User addUser(User user) {
-        return userDao.addUser(user);
+    public UserDto addUser(UserDto userDto) {
+        return UserMapper.toUserDto(userDao.addUser(UserMapper.toUser(userDto)));
     }
 
     @Override
-    public User updateUser(User user) {
-        return userDao.updateUser(user);
+    public UserDto updateUser(UserDto userDto) {
+        return UserMapper.toUserDto(userDao.updateUser(UserMapper.toUser(userDto)));
     }
 
     @Override
-    public User getUser(Integer userId) {
-        return userDao.getUser(userId);
+    public UserDto getUser(Integer userId) {
+        return UserMapper.toUserDto(userDao.getUser(userId));
     }
 
     @Override
