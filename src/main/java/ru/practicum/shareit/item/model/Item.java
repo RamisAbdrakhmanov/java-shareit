@@ -7,9 +7,7 @@ import lombok.NoArgsConstructor;
 import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.user.User;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import java.util.Objects;
 
 /**
  * TODO Sprint add-controllers.
@@ -21,15 +19,36 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 public class Item {
 
-    Integer id;
-    @NotBlank(message = "Item name cannot be empty.")
-    String name;
-    @NotBlank(message = "Item description cannot be empty.")
-    @Size(max = 200, message = "Item description must be less than 200 characters.")
-    String description;
-    @NotNull(message = "available is null")
-    Boolean isAvailable;
-    User owner;
-    ItemRequest request;
+    private Integer id;
+    private String name;
+    private String description;
+    private Boolean available;
+    private User owner;
+    private ItemRequest request;
 
+    public Item(Integer id, String name, String description, Boolean available, User owner) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.available = available;
+        this.owner = owner;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Item item = (Item) o;
+
+        if (!Objects.equals(id, item.id)) return false;
+        return Objects.equals(owner, item.owner);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (owner != null ? owner.hashCode() : 0);
+        return result;
+    }
 }

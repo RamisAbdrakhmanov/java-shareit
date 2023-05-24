@@ -1,44 +1,20 @@
 package ru.practicum.shareit.item;
 
-import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Service;
+
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.user.UserDao;
 
 import java.util.List;
 
-@Service
-@AllArgsConstructor
-public class ItemService {
+public interface ItemService {
+    ItemDto addItem(ItemDto itemDto, Integer userId);
 
-    private ItemDao itemDao;
-    private UserDao userDao;
+    ItemDto updateItem(ItemDto itemDto, Integer userId);
 
-    public ItemDto addItem(ItemDto itemDto) {
-        userDao.getUser(itemDto.getOwnerId());
-        return itemDao.addItem(itemDto);
-    }
+    void deleteItem(Integer itemId);
 
-    public ItemDto updateItem(ItemDto itemDto) {
-        userDao.getUser(itemDto.getOwnerId());
-        return itemDao.updateItem(itemDto);
-    }
+    ItemDto getItem(Integer itemId);
 
-    public void deleteItem(Integer itemId) {
-        itemDao.deleteItem(itemId);
-    }
+    List<ItemDto> getItems(Integer userId);
 
-    public ItemDto getItem(Integer itemId) {
-        return itemDao.getItem(itemId);
-    }
-
-    public List<ItemDto> getItems(Integer userId) {
-        userDao.getUser(userId);
-        return itemDao.getItems(userId);
-    }
-
-    public List<ItemDto> searchItems(String substring) {
-        return itemDao.searchItems(substring);
-    }
-
+    List<ItemDto> searchItems(String substring);
 }

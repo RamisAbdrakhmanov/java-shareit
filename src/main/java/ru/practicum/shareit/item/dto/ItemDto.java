@@ -19,16 +19,13 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 public class ItemDto {
 
-    Integer id;
+    private Integer id;
     @NotBlank(message = "Item name cannot be empty.")
-    String name;
+    private String name;
     @NotBlank(message = "Item description cannot be empty.")
     @Size(max = 200, message = "Item description must be less than 200 characters.")
-    String description;
+    private String description;
     @NotNull(message = "Available is null")
-    Boolean available;
-    Integer ownerId;
+    private Boolean available;
 
-    public ItemDto(String name, String description, Boolean isAvailable, Integer integer) {
-    }
 }

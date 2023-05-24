@@ -19,18 +19,11 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class Booking {
 
-    Integer id;
-    LocalDateTime start;
-    LocalDateTime end;
-    Item item;
-    User booker;
-    Status status;
+    private Integer id;
+    private LocalDateTime start;
+    private LocalDateTime end;
+    private Item item;
+    private User booker;
+    private Status status;
 
-
-    public enum Status {
-        WAITING,
-        APPROVED,
-        REJECTED,
-        CANCELED
-    }
 }
