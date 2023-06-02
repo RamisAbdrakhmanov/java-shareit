@@ -1,0 +1,42 @@
+DROP TABLE IF EXISTS users CASCADE;
+DROP TABLE IF EXISTS items CASCADE;
+DROP TABLE IF EXISTS item_requests CASCADE;
+DROP TABLE IF EXISTS bookings CASCADE;
+
+
+
+CREATE TABLE IF NOT EXISTS users
+(
+    id    BIGINT GENERATED ALWAYS AS IDENTITY NOT NULL PRIMARY KEY,
+    name  VARCHAR(255)                        NOT NULL,
+    email VARCHAR(512)                        NOT NULL UNIQUE,
+);
+
+CREATE TABLE IF NOT EXISTS items
+
+(
+    id           BIGINT GENERATED ALWAYS AS IDENTITY NOT NULL PRIMARY KEY,
+    name         VARCHAR(255),
+    description  VARCHAR(512),
+    is_available BOOLEAN,
+    owner_id     BIGINT REFERENCES users (id) ON DELETE CASCADE,
+    request_id   BIGINT REFERENCES item_requests (id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS item_requests
+(
+    id           BIGINT GENERATED ALWAYS AS IDENTITY NOT NULL PRIMARY KEY,
+    requestor_id BIGINT REFERENCES users (id) ON DELETE CASCADE,
+    description  VARCHAR(512),
+);
+
+CREATE TABLE IF NOT EXISTS bookings
+(
+    id         BIGINT GENERATED ALWAYS AS IDENTITY NOT NULL PRIMARY KEY,
+    booker_id  BIGINT REFERENCES users (id),
+    start_date TIMESTAMP WITHOUT TIME ZONE,
+    end_date   TIMESTAMP WITHOUT TIME ZONE,
+    item_id    BIGINT REFERENCES items (id) ON DELETE CASCADE,
+    status     varchar(50)
+);
+
