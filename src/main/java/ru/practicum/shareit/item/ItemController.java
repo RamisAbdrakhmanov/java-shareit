@@ -3,6 +3,7 @@ package ru.practicum.shareit.item;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemOwner;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
@@ -20,13 +21,14 @@ public class ItemController {
     private ItemService itemService;
 
     @GetMapping
-    public List<ItemDto> getItems(@RequestHeader("X-Sharer-User-Id") Integer userId) {
-        return itemService.getItems(userId).stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
+    public List<ItemOwner> getItems(@RequestHeader("X-Sharer-User-Id") Integer userId) {
+        return itemService.getItems(userId);
     }
 
     @GetMapping("/{itemId}")
-    public ItemDto getItem(@PathVariable Integer itemId) {
-        return ItemMapper.toItemDto(itemService.getItem(itemId));
+    public ItemOwner getItem(@PathVariable Integer itemId,
+                             @RequestHeader("X-Sharer-User-Id") Integer userId) {
+        return itemService.getItem(itemId, userId);
     }
 
     @PostMapping

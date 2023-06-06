@@ -2,22 +2,29 @@ package ru.practicum.shareit.item;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.booking.BookingMapper;
+import ru.practicum.shareit.booking.BookingRepository;
+import ru.practicum.shareit.booking.dto.IBooking;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.UserValidException;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemOwner;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserServiceImp;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
 public class ItemServiceImp implements ItemService {
 
     private ItemRepository itemRepository;
+    private BookingRepository bookingRepository;
     private UserServiceImp userServiceImp;
 
 
@@ -56,23 +63,58 @@ public class ItemServiceImp implements ItemService {
     }
 
     @Override
-    public Item getItem(Integer itemId) {
+    public ItemOwner getItem(Integer itemId, Integer userId) {
         Optional<Item> item = itemRepository.findById(itemId);
-        if(item.isEmpty()){
+        if (item.isEmpty()) {
             throw new NotFoundException("Item not found");
         }
-        return item.get();
+
+
+        LocalDateTime now = LocalDateTime.now();
+        if (Objects.equals(item.get().getOwner().getId(), userId)) {
+            IBooking last = BookingMapper.toIBooking(bookingRepository.
+                    findFirstByItemIdAndEndBeforeOrderByEndDesc(itemId, now));
+            IBooking next = BookingMapper.toIBooking(bookingRepository.
+                    findFirstByItemIdAndStartAfterOrderByStartAsc(itemId, now));
+            return ItemMapper.toItemOwner(item.get(), last, next);
+        } else {
+            return ItemMapper.toItemOwner(item.get(), null, null);
+        }
     }
 
     @Override
-    public List<Item> getItems(Integer userId) {
+    public List<ItemOwner> getItems(Integer userId) {
         userServiceImp.getUser(userId);
-        return itemRepository.findAllByOwnerId(userId);
+        List<Item> list = itemRepository.findAllByOwnerId(userId);
+        return list.stream().map(item -> {
+            LocalDateTime now = LocalDateTime.now();
+            IBooking last = null;
+            IBooking next = null;
+
+            if (Objects.equals(item.getOwner().getId(), userId)) {
+                last = BookingMapper.toIBooking(bookingRepository.
+                        findFirstByItemIdAndEndBeforeOrderByEndDesc(item.getId(), now));
+                next = BookingMapper.toIBooking(bookingRepository.
+                        findFirstByItemIdAndStartAfterOrderByStartAsc(item.getId(), now));
+            }
+            return ItemMapper.toItemOwner(item, last, next);
+        }).collect(Collectors.toList());
     }
 
     @Override
     public List<Item> searchItems(String substring) {
         return itemRepository.findItemByNameAndDescription(substring);
     }
+
+    @Override
+    public Item getItemById(Integer itemId) {
+        Optional<Item> item = itemRepository.findById(itemId);
+        if (item.isEmpty()) {
+            throw new NotFoundException("Item not found");
+        }
+
+        return item.get();
+    }
+
 
 }

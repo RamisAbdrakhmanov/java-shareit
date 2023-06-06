@@ -22,10 +22,6 @@ public class UserServiceImp implements UserService {
 
     @Override
     public User addUser(UserDto userDto) {
-     /*   Optional<User> checkUser = repository.findByEmail(userDto.getEmail());
-        if (checkUser.isPresent()) {
-            throw new UserValidException("email is busy");
-        }*/
         return repository.save(UserMapper.toUser(userDto));
     }
 
@@ -51,7 +47,7 @@ public class UserServiceImp implements UserService {
     @Override
     public User getUser(Integer userId) {
         Optional<User> user = repository.findById(userId);
-        if(user.isEmpty()){
+        if (user.isEmpty()) {
             throw new NotFoundException("User not found");
         }
         return user.get();

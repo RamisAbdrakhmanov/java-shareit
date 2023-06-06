@@ -1,10 +1,10 @@
 package ru.practicum.shareit.booking;
 
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingDto;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -18,27 +18,34 @@ public class BookingController {
     private BookingService bookingService;
 
     @GetMapping
-    public List<BookingDto> getBookings() {
-        return null;
+    public List<Booking> getBookings(@RequestHeader("X-Sharer-User-Id") Integer userId,
+                                     @RequestParam(required = false) String state) {
+        return bookingService.getBookings(userId, state);
+    }
+
+    @GetMapping("/owner")
+    public List<Booking> getBookingsOwner(@RequestHeader("X-Sharer-User-Id") Integer userId,
+                                          @RequestParam(required = false) String state) {
+        return bookingService.getBookingsOwner(userId, state);
     }
 
     @GetMapping("/{bookingId}")
-    public BookingDto getBooking(@PathVariable Integer bookingId,
+    public Booking getBooking(@PathVariable Integer bookingId,
                               @RequestHeader("X-Sharer-User-Id") Integer userId) {
-        return null;
+        return bookingService.getBooking(bookingId, userId);
     }
 
     @PostMapping
-    public BookingDto addBooking(@RequestBody BookingDto bookingDto,
+    public Booking addBooking(@Valid @RequestBody(required = false) BookingDto bookingDto,
                               @RequestHeader("X-Sharer-User-Id") Integer userId) {
-        return BookingMapper.toBookingDto(bookingService.addBooking(bookingDto,userId));
+        return bookingService.addBooking(bookingDto, userId);
     }
 
     @PatchMapping("/{bookingId}")
-    public BookingDto approvedBooking(@PathVariable Integer bookingId,
+    public Booking approvedBooking(@PathVariable Integer bookingId,
                                    @RequestHeader("X-Sharer-User-Id") Integer userId,
                                    @RequestParam Boolean approved) {
-        return null;
+        return bookingService.approvedBooking(bookingId, userId, approved);
     }
 
     @DeleteMapping("/{id}")
