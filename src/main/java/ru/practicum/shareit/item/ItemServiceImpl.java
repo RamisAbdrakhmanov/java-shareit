@@ -72,10 +72,10 @@ public class ItemServiceImpl implements ItemService {
         IBooking next = null;
         List<Comment> comments = commentRepository.findAllByItemId(item.getId());
         if (Objects.equals(item.getOwner().getId(), userId)) {
-            last = BookingMapper.toIBooking(bookingRepository.
-                    findFirstByItemIdAndEndBeforeOrderByEndDesc(item.getId(), now));
-            next = BookingMapper.toIBooking(bookingRepository.
-                    findFirstByItemIdAndStartAfterOrderByStartAsc(item.getId(), now));
+            last = BookingMapper.toIBooking(bookingRepository
+                    .findFirstByItemIdAndEndBeforeOrderByEndDesc(item.getId(), now));
+            next = BookingMapper.toIBooking(bookingRepository
+                    .findFirstByItemIdAndStartAfterOrderByStartAsc(item.getId(), now));
         }
         return ItemMapper.toItemOwner(
                 item,
