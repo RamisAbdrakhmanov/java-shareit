@@ -129,7 +129,11 @@ public class BookingServiceImpl implements BookingService {
                 return bookingRepository.findAllByItemOwnerIdAndStartAfterOrderByStartDesc(userId, now);
             case "CURRENT":
                 now = LocalDateTime.now();
-                return bookingRepository.findAllByItemOwnerIdAndStartBeforeAndEndAfterOrderByStartDesc(userId, now, now);
+                return bookingRepository.findAllByItemOwnerIdAndStartBeforeAndEndAfterOrderByStartDesc(
+                        userId,
+                        now,
+                        now
+                );
             case "ALL":
                 return bookingRepository.findAllByItemOwnerIdOrderByStartDesc(userId);
             default:
