@@ -2,6 +2,7 @@ package ru.practicum.shareit.booking;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.ItemService;
@@ -13,35 +14,37 @@ import javax.validation.ValidationException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-public class BookingServiceImp implements BookingService {
+public class BookingServiceImpl implements BookingService {
 
     private BookingRepository bookingRepository;
     private UserService userService;
     private ItemService itemService;
 
+    @Transactional(readOnly = true)
     @Override
     public Booking getBooking(Integer bookingId, Integer userId) {
-        Optional<Booking> booking = bookingRepository.findById(bookingId);
-        if (booking.isPresent()) {
-            if (!(Objects.equals(booking.get().getItem().getOwner().getId(), userId)
-                    ||
-                    Objects.equals(booking.get().getBooker().getId(), userId))) {
-                throw new NotFoundException("User cannot look at this booking");
-            }
-        } else {
-            throw new NotFoundException("Booking doesn't exist");
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new NotFoundException("Booking doesn't exist"));
+
+        if (!(Objects.equals(booking.getItem().getOwner().getId(), userId)
+                ||
+                Objects.equals(booking.getBooker().getId(), userId))) {
+            throw new NotFoundException("User cannot look at this booking");
         }
-        return booking.get();
+
+        return booking;
     }
 
     @Override
     public Booking addBooking(BookingDto bookingDto, Integer userId) {
         if (bookingDto.getStart().isAfter(bookingDto.getEnd()) || bookingDto.getStart().equals(bookingDto.getEnd())) {
             throw new ValidationException("Start booking is after end");
+        }
+        if (bookingDto.getStart().isBefore(LocalDateTime.now()) || bookingDto.getStart().equals(LocalDateTime.now())) {
+            throw new ValidationException("Start booking is before or equals now");
         }
         Item item = itemService.getItemById(bookingDto.getItemId());
         if (!item.getAvailable()) {
@@ -72,6 +75,7 @@ public class BookingServiceImp implements BookingService {
         return bookingRepository.save(booking);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<Booking> getBookings(Integer userId, String state) {
         userService.getUser(userId);
@@ -94,7 +98,7 @@ public class BookingServiceImp implements BookingService {
                 return bookingRepository.findAllByBookerIdAndStartAfterOrderByStartDesc(userId, now);
             case "CURRENT":
                 now = LocalDateTime.now();
-                return bookingRepository.findAllByBookerIdAndStartBeforeAndEndAfterOrderByStartDesc(userId, now, now);
+                return bookingRepository.findAllByBookerIdAndStartBeforeAndEndAfterOrderByStartAsc(userId, now, now);
             case "ALL":
                 return bookingRepository.findAllByBookerIdOrderByStartDesc(userId);
             default:
@@ -102,6 +106,7 @@ public class BookingServiceImp implements BookingService {
         }
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<Booking> getBookingsOwner(Integer userId, String state) {
         userService.getUser(userId);

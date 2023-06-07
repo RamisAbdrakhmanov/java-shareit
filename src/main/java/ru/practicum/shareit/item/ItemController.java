@@ -2,6 +2,9 @@ package ru.practicum.shareit.item;
 
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.item.commet.CommentMapper;
+import ru.practicum.shareit.item.commet.CommentService;
+import ru.practicum.shareit.item.commet.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemOwner;
 
@@ -19,6 +22,7 @@ import java.util.stream.Collectors;
 public class ItemController {
 
     private ItemService itemService;
+    private CommentService commentService;
 
     @GetMapping
     public List<ItemOwner> getItems(@RequestHeader("X-Sharer-User-Id") Integer userId) {
@@ -56,6 +60,13 @@ public class ItemController {
             return new ArrayList<>();
         }
         return itemService.searchItems(text).stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
+    }
+
+    @PostMapping("/{itemId}/comment")
+    public CommentDto addComment(@PathVariable Integer itemId,
+                                 @Valid @RequestBody CommentDto commentDto,
+                                 @RequestHeader("X-Sharer-User-Id") Integer authorId) {
+        return CommentMapper.toCommentDto(commentService.addComment(itemId, commentDto, authorId));
     }
 
 }

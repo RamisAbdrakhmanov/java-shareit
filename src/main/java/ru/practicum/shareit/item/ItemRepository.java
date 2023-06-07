@@ -6,7 +6,7 @@ import ru.practicum.shareit.item.model.Item;
 
 import java.util.List;
 
-interface ItemRepository extends JpaRepository<Item, Integer> {
+public interface ItemRepository extends JpaRepository<Item, Integer> {
 
     List<Item> findAllByOwnerId(Integer userId);
 
@@ -16,4 +16,5 @@ interface ItemRepository extends JpaRepository<Item, Integer> {
             "or lower(it.description) like concat('%',lower(?1),'%')) " +
             "and it.available =true ")
     List<Item> findItemByNameAndDescription(String search);
+
 }

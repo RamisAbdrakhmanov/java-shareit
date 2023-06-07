@@ -2,16 +2,20 @@ package ru.practicum.shareit.item;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.dto.IBooking;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.UserValidException;
+import ru.practicum.shareit.item.commet.Comment;
+import ru.practicum.shareit.item.commet.CommentMapper;
+import ru.practicum.shareit.item.commet.CommentRepository;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemOwner;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
-import ru.practicum.shareit.user.UserServiceImp;
+import ru.practicum.shareit.user.UserService;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,17 +25,18 @@ import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
-public class ItemServiceImp implements ItemService {
+public class ItemServiceImpl implements ItemService {
 
     private ItemRepository itemRepository;
     private BookingRepository bookingRepository;
-    private UserServiceImp userServiceImp;
+    private UserService userService;
+    private CommentRepository commentRepository;
 
 
     @Override
     public Item addItem(ItemDto itemDto, Integer userId) {
-        User user = userServiceImp.getUser(userId);
-        Item item = ItemMapper.toItem(itemDto, userServiceImp.getUser(userId));
+        User user = userService.getUser(userId);
+        Item item = ItemMapper.toItem(itemDto, userService.getUser(userId));
         return itemRepository.save(item);
     }
 
@@ -43,15 +48,11 @@ public class ItemServiceImp implements ItemService {
             item.setAvailable(itemDto.getAvailable());
         }
         if (itemDto.getName() != null) {
-            if (!Objects.equals(item.getId(), userId)) {
-                throw new UserValidException("User dont have this item");
-            }
+            checkValidOwnItem(item.getId(), userId);
             item.setName(itemDto.getName());
         }
         if (itemDto.getDescription() != null) {
-            if (!Objects.equals(item.getId(), userId)) {
-                throw new UserValidException("User dont have this item");
-            }
+            checkValidOwnItem(item.getId(), userId);
             item.setDescription(itemDto.getDescription());
         }
         return itemRepository.save(item);
@@ -62,50 +63,44 @@ public class ItemServiceImp implements ItemService {
         itemRepository.deleteById(itemId);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public ItemOwner getItem(Integer itemId, Integer userId) {
-        Optional<Item> item = itemRepository.findById(itemId);
-        if (item.isEmpty()) {
-            throw new NotFoundException("Item not found");
-        }
-
+        Item item = itemRepository.findById(itemId).orElseThrow(() -> new NotFoundException("Item not found"));
 
         LocalDateTime now = LocalDateTime.now();
-        if (Objects.equals(item.get().getOwner().getId(), userId)) {
-            IBooking last = BookingMapper.toIBooking(bookingRepository.
-                    findFirstByItemIdAndEndBeforeOrderByEndDesc(itemId, now));
-            IBooking next = BookingMapper.toIBooking(bookingRepository.
-                    findFirstByItemIdAndStartAfterOrderByStartAsc(itemId, now));
-            return ItemMapper.toItemOwner(item.get(), last, next);
-        } else {
-            return ItemMapper.toItemOwner(item.get(), null, null);
+        IBooking last = null;
+        IBooking next = null;
+        List<Comment> comments = commentRepository.findAllByItemId(item.getId());
+        if (Objects.equals(item.getOwner().getId(), userId)) {
+            last = BookingMapper.toIBooking(bookingRepository.
+                    findFirstByItemIdAndEndBeforeOrderByEndDesc(item.getId(), now));
+            next = BookingMapper.toIBooking(bookingRepository.
+                    findFirstByItemIdAndStartAfterOrderByStartAsc(item.getId(), now));
         }
+        return ItemMapper.toItemOwner(
+                item,
+                last,
+                next,
+                comments.stream().map(CommentMapper::toCommentDto).collect(Collectors.toList())
+        );
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<ItemOwner> getItems(Integer userId) {
-        userServiceImp.getUser(userId);
+        userService.getUser(userId);
         List<Item> list = itemRepository.findAllByOwnerId(userId);
-        return list.stream().map(item -> {
-            LocalDateTime now = LocalDateTime.now();
-            IBooking last = null;
-            IBooking next = null;
-
-            if (Objects.equals(item.getOwner().getId(), userId)) {
-                last = BookingMapper.toIBooking(bookingRepository.
-                        findFirstByItemIdAndEndBeforeOrderByEndDesc(item.getId(), now));
-                next = BookingMapper.toIBooking(bookingRepository.
-                        findFirstByItemIdAndStartAfterOrderByStartAsc(item.getId(), now));
-            }
-            return ItemMapper.toItemOwner(item, last, next);
-        }).collect(Collectors.toList());
+        return list.stream().map(item -> getItem(item.getId(),userId)).collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<Item> searchItems(String substring) {
         return itemRepository.findItemByNameAndDescription(substring);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Item getItemById(Integer itemId) {
         Optional<Item> item = itemRepository.findById(itemId);
@@ -114,6 +109,12 @@ public class ItemServiceImp implements ItemService {
         }
 
         return item.get();
+    }
+
+    private void checkValidOwnItem(Integer itemId, Integer userId) {
+        if (!Objects.equals(itemId, userId)) {
+            throw new UserValidException("User dont have this item");
+        }
     }
 
 
