@@ -28,7 +28,6 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-
     @NotBlank(message = "empty name")
     @Column
     private String name;

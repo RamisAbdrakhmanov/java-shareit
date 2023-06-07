@@ -32,7 +32,6 @@ public class ItemServiceImpl implements ItemService {
     private UserService userService;
     private CommentRepository commentRepository;
 
-
     @Override
     public Item addItem(ItemDto itemDto, Integer userId) {
         User user = userService.getUser(userId);
@@ -91,7 +90,7 @@ public class ItemServiceImpl implements ItemService {
     public List<ItemOwner> getItems(Integer userId) {
         userService.getUser(userId);
         List<Item> list = itemRepository.findAllByOwnerId(userId);
-        return list.stream().map(item -> getItem(item.getId(),userId)).collect(Collectors.toList());
+        return list.stream().map(item -> getItem(item.getId(), userId)).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)

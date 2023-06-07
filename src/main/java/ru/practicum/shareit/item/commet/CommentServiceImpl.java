@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.item.commet.dto.CommentDto;
-import ru.practicum.shareit.exception.NotFoundException;
 
 import javax.validation.ValidationException;
 import java.time.LocalDateTime;
@@ -28,7 +27,7 @@ public class CommentServiceImpl implements CommentService {
         if (booking == null) {
             throw new ValidationException("You need to order this item");
         }
-        Comment comment = CommentMapper.toComment(booking.getItem(),booking.getBooker(),commentDto);
+        Comment comment = CommentMapper.toComment(booking.getItem(), booking.getBooker(), commentDto);
         return commentRepository.save(comment);
     }
 }
