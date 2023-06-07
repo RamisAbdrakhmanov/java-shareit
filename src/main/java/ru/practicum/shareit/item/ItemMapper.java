@@ -84,39 +84,6 @@ public class ItemMapper {
                     comments
             );
         }
-       /* if (last != null) {
-            if (last.getId() != null) {
-                return new ItemOwner(
-                        item.getId(),
-                        item.getName(),
-                        item.getDescription(),
-                        item.getAvailable(),
-                        last,
-                        next,
-                        comments
-                );
-            } else {
-                return new ItemOwner(
-                        item.getId(),
-                        item.getName(),
-                        item.getDescription(),
-                        item.getAvailable(),
-                        null,
-                        null,
-                        comments
-                );
-            }
-        } else {
-            return new ItemOwner(
-                    item.getId(),
-                    item.getName(),
-                    item.getDescription(),
-                    item.getAvailable(),
-                    null,
-                    null,
-                    comments
-            );
-        }*/
     }
 
 }

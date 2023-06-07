@@ -7,6 +7,7 @@ import ru.practicum.shareit.exception.UserValidException;
 import ru.practicum.shareit.user.dto.UserDto;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -34,7 +35,7 @@ public class UserServiceImpl implements UserService {
         if (userDto.getEmail() != null) {
             Optional<User> checkUser = repository.findByEmail(userDto.getEmail());
             if (checkUser.isPresent()) {
-                if (checkUser.get().getId() != userDto.getId()) {
+                if (!Objects.equals(checkUser.get().getId(), userDto.getId())) {
                     throw new UserValidException("email is busy");
                 }
             }

@@ -47,9 +47,4 @@ public class BookingController {
                                    @RequestParam Boolean approved) {
         return bookingService.approvedBooking(bookingId, userId, approved);
     }
-
-    @DeleteMapping("/{id}")
-    public void deleteBooking(@PathVariable String id) {
-
-    }
 }
