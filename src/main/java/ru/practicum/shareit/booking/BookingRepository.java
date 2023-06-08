@@ -17,7 +17,9 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
 
     List<Booking> findAllByBookerIdAndEndBeforeOrderByStartDesc(Integer bookerId, LocalDateTime end);
 
-    List<Booking> findAllByBookerIdAndStartBeforeAndEndAfterOrderByStartAsc(Integer bookerId, LocalDateTime start, LocalDateTime end);
+    List<Booking> findAllByBookerIdAndStartBeforeAndEndAfterOrderByStartAsc(Integer bookerId,
+                                                                            LocalDateTime start,
+                                                                            LocalDateTime end);
 
     List<Booking> findAllByItemOwnerIdOrderByStartDesc(Integer ownerId);
 
@@ -27,12 +29,20 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
 
     List<Booking> findAllByItemOwnerIdAndEndBeforeOrderByStartDesc(Integer ownerId, LocalDateTime end);
 
-    List<Booking> findAllByItemOwnerIdAndStartBeforeAndEndAfterOrderByStartDesc(Integer ownerId, LocalDateTime start, LocalDateTime end);
+    List<Booking> findAllByItemOwnerIdAndStartBeforeAndEndAfterOrderByStartDesc(Integer ownerId,
+                                                                                LocalDateTime start,
+                                                                                LocalDateTime end);
 
-    Optional<Booking> findFirstByItemIdAndEndBeforeOrderByEndDesc(Integer itemId, LocalDateTime end);
+    Optional<Booking> findFirstByItemIdAndStartBeforeAndStatusOrderByEndDesc(Integer itemId,
+                                                                             LocalDateTime now,
+                                                                             Status status);
 
-    Optional<Booking> findFirstByItemIdAndStartAfterOrderByStartAsc(Integer itemId, LocalDateTime start);
+    Optional<Booking> findFirstByItemIdAndStartAfterAndStatusOrderByStartAsc(Integer itemId,
+                                                                             LocalDateTime now,
+                                                                             Status status);
 
-    Booking findFirstByItemIdAndBookerIdAndEndBeforeOrderByEndDesc(Integer itemId, Integer bookerId, LocalDateTime time);
+    Booking findFirstByItemIdAndBookerIdAndEndBeforeOrderByEndDesc(Integer itemId,
+                                                                   Integer bookerId,
+                                                                   LocalDateTime time);
 
 }

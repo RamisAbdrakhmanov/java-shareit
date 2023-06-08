@@ -31,59 +31,16 @@ public class ItemMapper {
     }
 
     public static ItemOwner toItemOwner(Item item, IBooking last, IBooking next, List<CommentDto> comments) {
-        if (last != null) {
-            if (last.getId() != null && next.getId() != null) {
-                return new ItemOwner(
-                        item.getId(),
-                        item.getName(),
-                        item.getDescription(),
-                        item.getAvailable(),
-                        last,
-                        next,
-                        comments
-                );
-            } else if (last.getId() != null) {
-                return new ItemOwner(
-                        item.getId(),
-                        item.getName(),
-                        item.getDescription(),
-                        item.getAvailable(),
-                        last,
-                        null,
-                        comments
-                );
-            } else if (next.getId() != null) {
-                return new ItemOwner(
-                        item.getId(),
-                        item.getName(),
-                        item.getDescription(),
-                        item.getAvailable(),
-                        null,
-                        next,
-                        comments
-                );
-            } else {
-                return new ItemOwner(
-                        item.getId(),
-                        item.getName(),
-                        item.getDescription(),
-                        item.getAvailable(),
-                        null,
-                        null,
-                        comments
-                );
-            }
-        } else {
-            return new ItemOwner(
-                    item.getId(),
-                    item.getName(),
-                    item.getDescription(),
-                    item.getAvailable(),
-                    null,
-                    null,
-                    comments
-            );
-        }
+
+        return new ItemOwner(
+                item.getId(),
+                item.getName(),
+                item.getDescription(),
+                item.getAvailable(),
+                last,
+                next,
+                comments
+        );
     }
 
 }

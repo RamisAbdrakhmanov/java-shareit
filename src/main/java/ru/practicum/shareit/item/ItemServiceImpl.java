@@ -1,10 +1,12 @@
 package ru.practicum.shareit.item;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.BookingRepository;
+import ru.practicum.shareit.booking.Status;
 import ru.practicum.shareit.booking.dto.IBooking;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.UserValidException;
@@ -23,6 +25,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+
+@Slf4j
 @Service
 @AllArgsConstructor
 public class ItemServiceImpl implements ItemService {
@@ -62,6 +66,7 @@ public class ItemServiceImpl implements ItemService {
         itemRepository.deleteById(itemId);
     }
 
+
     @Transactional(readOnly = true)
     @Override
     public ItemOwner getItem(Integer itemId, Integer userId) {
@@ -73,10 +78,11 @@ public class ItemServiceImpl implements ItemService {
         List<Comment> comments = commentRepository.findAllByItemId(item.getId());
         if (Objects.equals(item.getOwner().getId(), userId)) {
             last = BookingMapper.toIBooking(bookingRepository
-                    .findFirstByItemIdAndEndBeforeOrderByEndDesc(item.getId(), now));
+                    .findFirstByItemIdAndStartBeforeAndStatusOrderByEndDesc(item.getId(), now, Status.APPROVED));
             next = BookingMapper.toIBooking(bookingRepository
-                    .findFirstByItemIdAndStartAfterOrderByStartAsc(item.getId(), now));
+                    .findFirstByItemIdAndStartAfterAndStatusOrderByStartAsc(item.getId(), now, Status.APPROVED));
         }
+
         return ItemMapper.toItemOwner(
                 item,
                 last,
@@ -84,6 +90,7 @@ public class ItemServiceImpl implements ItemService {
                 comments.stream().map(CommentMapper::toCommentDto).collect(Collectors.toList())
         );
     }
+
 
     @Transactional(readOnly = true)
     @Override
