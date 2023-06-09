@@ -4,15 +4,15 @@ import ru.practicum.shareit.user.dto.UserDto;
 
 import java.util.List;
 
-interface UserService {
+public interface UserService {
 
-    List<UserDto> getUsers();
+    List<User> getUsers();
 
-    UserDto addUser(UserDto userDto);
+    User addUser(UserDto userDto);
 
-    UserDto updateUser(UserDto userDto);
+    User updateUser(UserDto userDto);
 
-    UserDto getUser(Integer userId);
+    User getUser(Integer userId);
 
     void deleteUser(Integer userId);
 }

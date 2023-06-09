@@ -2,11 +2,16 @@ package ru.practicum.shareit.item;
 
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.item.commet.CommentMapper;
+import ru.practicum.shareit.item.commet.CommentService;
+import ru.practicum.shareit.item.commet.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemOwner;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * TODO Sprint add-controllers.
@@ -17,21 +22,23 @@ import java.util.List;
 public class ItemController {
 
     private ItemService itemService;
+    private CommentService commentService;
 
     @GetMapping
-    public List<ItemDto> getItems(@RequestHeader("X-Sharer-User-Id") Integer userId) {
+    public List<ItemOwner> getItems(@RequestHeader("X-Sharer-User-Id") Integer userId) {
         return itemService.getItems(userId);
     }
 
     @GetMapping("/{itemId}")
-    public ItemDto getItem(@PathVariable Integer itemId) {
-        return itemService.getItem(itemId);
+    public ItemOwner getItem(@PathVariable Integer itemId,
+                             @RequestHeader("X-Sharer-User-Id") Integer userId) {
+        return itemService.getItem(itemId, userId);
     }
 
     @PostMapping
     public ItemDto addItem(@RequestHeader("X-Sharer-User-Id") Integer userId,
                            @Valid @RequestBody ItemDto itemDto) {
-        return itemService.addItem(itemDto, userId);
+        return ItemMapper.toItemDto(itemService.addItem(itemDto, userId));
     }
 
     @PatchMapping("/{itemId}")
@@ -39,7 +46,7 @@ public class ItemController {
                               @RequestHeader("X-Sharer-User-Id") Integer userId,
                               @RequestBody ItemDto itemDto) {
         itemDto.setId(itemId);
-        return itemService.updateItem(itemDto, userId);
+        return ItemMapper.toItemDto(itemService.updateItem(itemDto, userId));
     }
 
     @DeleteMapping("/{itemId}")
@@ -52,7 +59,14 @@ public class ItemController {
         if (text.isBlank()) {
             return new ArrayList<>();
         }
-        return itemService.searchItems(text);
+        return itemService.searchItems(text).stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
+    }
+
+    @PostMapping("/{itemId}/comment")
+    public CommentDto addComment(@PathVariable Integer itemId,
+                                 @Valid @RequestBody CommentDto commentDto,
+                                 @RequestHeader("X-Sharer-User-Id") Integer authorId) {
+        return CommentMapper.toCommentDto(commentService.addComment(itemId, commentDto, authorId));
     }
 
 }
