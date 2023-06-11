@@ -9,7 +9,7 @@ import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.item.dto.ItemIQ;
-import ru.practicum.shareit.request.dto.RequestDto;
+import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserService;
 
@@ -18,61 +18,61 @@ import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
-public class RequestServiceImpl implements RequestService {
+public class ItemRequestServiceImpl implements ItemRequestService {
 
-    private RequestRepository requestRepository;
+    private ItemRequestRepository itemRequestRepository;
     private UserService userService;
     private ItemRepository itemRepository;
 
     @Override
-    public List<RequestDto> getItemRequestsAll(Integer from, Integer size, Integer requesterId) {
+    public List<ItemRequestDto> getItemRequestsAll(Integer from, Integer size, Integer requesterId) {
         Pageable pageable = PageRequest.of(from, size, Sort.by("created").ascending());
-        return requestRepository.findAllByRequesterIdIsNot(requesterId, pageable).stream().map(i -> {
+        return itemRequestRepository.findAllByRequesterIdIsNot(requesterId, pageable).stream().map(i -> {
             List<ItemIQ> list = itemRepository.findAllByItemRequestId(i.getId())
                     .stream()
                     .map(ItemMapper::toItemIQ)
                     .collect(Collectors.toList());
-            return RequestMapper.toItemRequestDto(i, list);
+            return ItemRequestMapper.toItemRequestDto(i, list);
         }).collect(Collectors.toList());
     }
 
     @Override
-    public List<RequestDto> getItemRequestsForRequester(Integer requesterId) {
+    public List<ItemRequestDto> getItemRequestsForRequester(Integer requesterId) {
         User requester = userService.getUser(requesterId);
-        return requestRepository.findAllByRequester(requester).stream().map(i -> {
+        return itemRequestRepository.findAllByRequester(requester).stream().map(i -> {
             List<ItemIQ> list = itemRepository.findAllByItemRequestId(i.getId())
                     .stream()
                     .map(ItemMapper::toItemIQ)
                     .collect(Collectors.toList());
-            return RequestMapper.toItemRequestDto(i, list);
+            return ItemRequestMapper.toItemRequestDto(i, list);
         }).collect(Collectors.toList());
 
     }
 
     @Override
-    public RequestDto getItemRequest(Integer itemRequestId, Integer requesterId) {
+    public ItemRequestDto getItemRequest(Integer itemRequestId, Integer requesterId) {
         userService.getUser(requesterId);
         List<ItemIQ> list = itemRepository.findAllByItemRequestId(itemRequestId)
                 .stream()
                 .map(ItemMapper::toItemIQ)
                 .collect(Collectors.toList());
-        return RequestMapper.toItemRequestDto(requestRepository.findById(itemRequestId)
+        return ItemRequestMapper.toItemRequestDto(itemRequestRepository.findById(itemRequestId)
                 .orElseThrow(() -> new NotFoundException("ItemRequest not found")), list);
     }
 
-    public Request getItemRequestFofCreateItem(Integer itemRequestId) {
-        return requestRepository.findById(itemRequestId)
+    public ItemRequest getItemRequestFofCreateItem(Integer itemRequestId) {
+        return itemRequestRepository.findById(itemRequestId)
                 .orElseThrow(() -> new NotFoundException("ItemRequest not found"));
     }
 
     @Override
-    public RequestDto addItemRequest(RequestDto requestDto, Integer requesterId) {
+    public ItemRequestDto addItemRequest(ItemRequestDto itemRequestDto, Integer requesterId) {
         User requester = userService.getUser(requesterId);
-        Request request = requestRepository.save(RequestMapper.toItemRequest(requestDto, requester));
-        List<ItemIQ> list = itemRepository.findAllByItemRequestId(request.getId())
+        ItemRequest itemRequest = itemRequestRepository.save(ItemRequestMapper.toItemRequest(itemRequestDto, requester));
+        List<ItemIQ> list = itemRepository.findAllByItemRequestId(itemRequest.getId())
                 .stream()
                 .map(ItemMapper::toItemIQ)
                 .collect(Collectors.toList());
-        return RequestMapper.toItemRequestDto(request, list);
+        return ItemRequestMapper.toItemRequestDto(itemRequest, list);
     }
 }

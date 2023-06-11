@@ -12,9 +12,10 @@ import java.util.List;
 /**
  * TODO Sprint add-item-requests.
  */
+
 @Data
 @AllArgsConstructor
-public class RequestDto {
+public class ItemRequestDto {
 
     private Integer id;
 
