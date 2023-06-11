@@ -9,9 +9,9 @@ import java.util.List;
 
 public class ItemRequestMapper {
 
-    public static ItemRequest toItemRequest(ItemRequestDto ItemRequestDto, User requester) {
+    public static ItemRequest toItemRequest(ItemRequestDto itemRequestDto, User requester) {
         return new ItemRequest(
-                ItemRequestDto.getDescription(),
+                itemRequestDto.getDescription(),
                 requester,
                 LocalDateTime.now()
         );
