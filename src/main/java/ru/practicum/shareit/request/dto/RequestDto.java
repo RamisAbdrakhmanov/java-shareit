@@ -14,7 +14,7 @@ import java.util.List;
  */
 @Data
 @AllArgsConstructor
-public class ItemRequestDto {
+public class RequestDto {
 
     private Integer id;
 

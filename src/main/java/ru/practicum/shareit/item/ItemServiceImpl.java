@@ -17,8 +17,8 @@ import ru.practicum.shareit.item.comment.CommentRepository;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemOwner;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.request.ItemRequest;
-import ru.practicum.shareit.request.ItemRequestServiceImpl;
+import ru.practicum.shareit.request.Request;
+import ru.practicum.shareit.request.RequestServiceImpl;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserService;
 
@@ -36,15 +36,15 @@ public class ItemServiceImpl implements ItemService {
     private BookingRepository bookingRepository;
     private UserService userService;
     private CommentRepository commentRepository;
-    private ItemRequestServiceImpl itemRequestService;
+    private RequestServiceImpl itemRequestService;
 
     @Override
     public Item addItem(ItemDto itemDto, Integer userId) {
         User user = userService.getUser(userId);
-        ItemRequest itemRequest =
+        Request request =
                 itemDto.getRequestId() != null ? itemRequestService
                         .getItemRequestFofCreateItem(itemDto.getRequestId()) : null;
-        Item item = ItemMapper.toItem(itemDto, user, itemRequest);
+        Item item = ItemMapper.toItem(itemDto, user, request);
         return itemRepository.save(item);
     }
 
