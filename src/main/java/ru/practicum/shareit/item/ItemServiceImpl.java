@@ -1,7 +1,8 @@
 package ru.practicum.shareit.item;
 
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.BookingMapper;
@@ -10,23 +11,23 @@ import ru.practicum.shareit.booking.Status;
 import ru.practicum.shareit.booking.dto.IBooking;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.UserValidException;
-import ru.practicum.shareit.item.commet.Comment;
-import ru.practicum.shareit.item.commet.CommentMapper;
-import ru.practicum.shareit.item.commet.CommentRepository;
+import ru.practicum.shareit.item.comment.Comment;
+import ru.practicum.shareit.item.comment.CommentMapper;
+import ru.practicum.shareit.item.comment.CommentRepository;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemOwner;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.request.ItemRequest;
+import ru.practicum.shareit.request.ItemRequestServiceImpl;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserService;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 
-@Slf4j
 @Service
 @AllArgsConstructor
 public class ItemServiceImpl implements ItemService {
@@ -35,17 +36,21 @@ public class ItemServiceImpl implements ItemService {
     private BookingRepository bookingRepository;
     private UserService userService;
     private CommentRepository commentRepository;
+    private ItemRequestServiceImpl itemRequestService;
 
     @Override
     public Item addItem(ItemDto itemDto, Integer userId) {
         User user = userService.getUser(userId);
-        Item item = ItemMapper.toItem(itemDto, user);
+        ItemRequest itemRequest =
+                itemDto.getRequestId() != null ? itemRequestService
+                        .getItemRequestFofCreateItem(itemDto.getRequestId()) : null;
+        Item item = ItemMapper.toItem(itemDto, user, itemRequest);
         return itemRepository.save(item);
     }
 
     @Override
     public Item updateItem(ItemDto itemDto, Integer userId) {
-        Item item = itemRepository.getReferenceById(itemDto.getId());
+        Item item = getItemById(itemDto.getId());
 
         if (itemDto.getAvailable() != null) {
             item.setAvailable(itemDto.getAvailable());
@@ -94,27 +99,24 @@ public class ItemServiceImpl implements ItemService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<ItemOwner> getItems(Integer userId) {
+    public List<ItemOwner> getItems(Integer userId, Integer from, Integer size) {
         userService.getUser(userId);
-        List<Item> list = itemRepository.findAllByOwnerId(userId);
+        Pageable pageable = PageRequest.of(from / size, size);
+        List<Item> list = itemRepository.findAllByOwnerId(userId, pageable);
         return list.stream().map(item -> getItem(item.getId(), userId)).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
     @Override
-    public List<Item> searchItems(String substring) {
-        return itemRepository.findItemByNameAndDescription(substring);
+    public List<Item> searchItems(String substring, Integer from, Integer size) {
+        Pageable pageable = PageRequest.of(from / size, size);
+        return itemRepository.findItemByNameAndDescription(substring, pageable);
     }
 
     @Transactional(readOnly = true)
     @Override
     public Item getItemById(Integer itemId) {
-        Optional<Item> item = itemRepository.findById(itemId);
-        if (item.isEmpty()) {
-            throw new NotFoundException("Item not found");
-        }
-
-        return item.get();
+        return itemRepository.findById(itemId).orElseThrow(() -> new NotFoundException("Item not found"));
     }
 
     private void checkValidOwnItem(Integer itemId, Integer userId) {

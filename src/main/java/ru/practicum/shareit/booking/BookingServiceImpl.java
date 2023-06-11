@@ -1,6 +1,8 @@
 package ru.practicum.shareit.booking;
 
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingDto;
@@ -77,11 +79,11 @@ public class BookingServiceImpl implements BookingService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<Booking> getBookings(Integer userId, String state) {
+    public List<Booking> getBookings(Integer from, Integer size, Integer userId, String state) {
         userService.getUser(userId);
-
+        Pageable pageable = PageRequest.of(from / size, size);
         if (state == null) {
-            return bookingRepository.findAllByBookerIdOrderByStartDesc(userId);
+            return bookingRepository.findAllByBookerIdOrderByStartDesc(userId, pageable);
         }
 
         LocalDateTime now;
@@ -89,18 +91,19 @@ public class BookingServiceImpl implements BookingService {
             case "WAITING":
             case "REJECTED":
                 Status status = Status.valueOf(state);
-                return bookingRepository.findAllByBookerIdAndStatusOrderByStartDesc(userId, status);
+                return bookingRepository.findAllByBookerIdAndStatusOrderByStartDesc(userId, status, pageable);
             case "PAST":
                 now = LocalDateTime.now();
-                return bookingRepository.findAllByBookerIdAndEndBeforeOrderByStartDesc(userId, now);
+                return bookingRepository.findAllByBookerIdAndEndBeforeOrderByStartDesc(userId, now, pageable);
             case "FUTURE":
                 now = LocalDateTime.now();
-                return bookingRepository.findAllByBookerIdAndStartAfterOrderByStartDesc(userId, now);
+                return bookingRepository.findAllByBookerIdAndStartAfterOrderByStartDesc(userId, now, pageable);
             case "CURRENT":
                 now = LocalDateTime.now();
-                return bookingRepository.findAllByBookerIdAndStartBeforeAndEndAfterOrderByStartAsc(userId, now, now);
+                return bookingRepository
+                        .findAllByBookerIdAndStartBeforeAndEndAfterOrderByStartAsc(userId, now, now, pageable);
             case "ALL":
-                return bookingRepository.findAllByBookerIdOrderByStartDesc(userId);
+                return bookingRepository.findAllByBookerIdOrderByStartDesc(userId, pageable);
             default:
                 throw new ValidationException("Unknown state: UNSUPPORTED_STATUS");
         }
@@ -108,11 +111,13 @@ public class BookingServiceImpl implements BookingService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<Booking> getBookingsOwner(Integer userId, String state) {
+    public List<Booking> getBookingsOwner(Integer from, Integer size, Integer userId, String state) {
         userService.getUser(userId);
 
+        Pageable pageable = PageRequest.of(from / size, size);
+
         if (state == null) {
-            return bookingRepository.findAllByItemOwnerIdOrderByStartDesc(userId);
+            return bookingRepository.findAllByItemOwnerIdOrderByStartDesc(userId, pageable);
         }
 
         LocalDateTime now;
@@ -120,22 +125,23 @@ public class BookingServiceImpl implements BookingService {
             case "WAITING":
             case "REJECTED":
                 Status status = Status.valueOf(state);
-                return bookingRepository.findAllByItemOwnerIdAndStatusOrderByStartDesc(userId, status);
+                return bookingRepository.findAllByItemOwnerIdAndStatusOrderByStartDesc(userId, status, pageable);
             case "PAST":
                 now = LocalDateTime.now();
-                return bookingRepository.findAllByItemOwnerIdAndEndBeforeOrderByStartDesc(userId, now);
+                return bookingRepository.findAllByItemOwnerIdAndEndBeforeOrderByStartDesc(userId, now, pageable);
             case "FUTURE":
                 now = LocalDateTime.now();
-                return bookingRepository.findAllByItemOwnerIdAndStartAfterOrderByStartDesc(userId, now);
+                return bookingRepository.findAllByItemOwnerIdAndStartAfterOrderByStartDesc(userId, now, pageable);
             case "CURRENT":
                 now = LocalDateTime.now();
                 return bookingRepository.findAllByItemOwnerIdAndStartBeforeAndEndAfterOrderByStartDesc(
                         userId,
                         now,
-                        now
+                        now,
+                        pageable
                 );
             case "ALL":
-                return bookingRepository.findAllByItemOwnerIdOrderByStartDesc(userId);
+                return bookingRepository.findAllByItemOwnerIdOrderByStartDesc(userId, pageable);
             default:
                 throw new ValidationException("Unknown state: UNSUPPORTED_STATUS");
         }

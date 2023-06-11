@@ -18,7 +18,7 @@ public interface ItemService {
 
     Item getItemById(Integer itemId);
 
-    List<ItemOwner> getItems(Integer userId);
+    List<ItemOwner> getItems(Integer userId, Integer from, Integer size);
 
-    List<Item> searchItems(String substring);
+    List<Item> searchItems(String substring, Integer from, Integer size);
 }

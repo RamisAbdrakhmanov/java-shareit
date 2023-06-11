@@ -2,13 +2,16 @@ package ru.practicum.shareit.item;
 
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.item.commet.CommentMapper;
-import ru.practicum.shareit.item.commet.CommentService;
-import ru.practicum.shareit.item.commet.dto.CommentDto;
+import ru.practicum.shareit.item.comment.CommentMapper;
+import ru.practicum.shareit.item.comment.CommentService;
+import ru.practicum.shareit.item.comment.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemOwner;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,8 +28,14 @@ public class ItemController {
     private CommentService commentService;
 
     @GetMapping
-    public List<ItemOwner> getItems(@RequestHeader("X-Sharer-User-Id") Integer userId) {
-        return itemService.getItems(userId);
+    public List<ItemOwner> getItems(@RequestHeader("X-Sharer-User-Id") Integer userId,
+                                    @RequestParam(defaultValue = "0") @Min(0) Integer from,
+                                    @RequestParam(defaultValue = "20") @Min(1) @Max(100) Integer size) {
+        int numbInPage = from % size;
+        return itemService.getItems(userId, from, size)
+                .stream()
+                .skip(numbInPage)
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/{itemId}")
@@ -37,7 +46,7 @@ public class ItemController {
 
     @PostMapping
     public ItemDto addItem(@RequestHeader("X-Sharer-User-Id") Integer userId,
-                           @Valid @RequestBody ItemDto itemDto) {
+                           @NotNull @Valid @RequestBody ItemDto itemDto) {
         return ItemMapper.toItemDto(itemService.addItem(itemDto, userId));
     }
 
@@ -55,11 +64,16 @@ public class ItemController {
     }
 
     @GetMapping("/search")
-    public List<ItemDto> searchItems(@RequestParam String text) {
+    public List<ItemDto> searchItems(@RequestParam String text,
+                                     @RequestParam(defaultValue = "0") @Min(0) Integer from,
+                                     @RequestParam(defaultValue = "20") @Min(1) @Max(100) Integer size) {
         if (text.isBlank()) {
             return new ArrayList<>();
         }
-        return itemService.searchItems(text).stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
+        int numbInPage = from % size;
+        return itemService.searchItems(text, from, size).stream().map(ItemMapper::toItemDto)
+                .skip(numbInPage)
+                .collect(Collectors.toList());
     }
 
     @PostMapping("/{itemId}/comment")

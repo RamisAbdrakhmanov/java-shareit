@@ -1,12 +1,11 @@
 package ru.practicum.shareit.user;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Objects;
 
 /**
  * TODO Sprint add-controllers.
@@ -14,7 +13,6 @@ import java.util.Objects;
 
 
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -26,23 +24,10 @@ public class User {
     private Integer id;
 
     @Column
+    @EqualsAndHashCode.Exclude
     private String name;
 
     @Column
+    @EqualsAndHashCode.Exclude
     private String email;
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        User user = (User) o;
-
-        return Objects.equals(id, user.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return id != null ? id.hashCode() : 0;
-    }
 }

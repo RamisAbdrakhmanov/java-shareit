@@ -1,8 +1,8 @@
-package ru.practicum.shareit.item.commet;
+package ru.practicum.shareit.item.comment;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
@@ -11,7 +11,6 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -22,6 +21,7 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @EqualsAndHashCode.Exclude
     @Column(name = "message")
     private String text;
 
