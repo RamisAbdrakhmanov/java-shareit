@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item;
 
 import lombok.AllArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.comment.CommentMapper;
 import ru.practicum.shareit.item.comment.CommentService;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 /**
  * TODO Sprint add-controllers.
  */
+@Validated
 @RestController
 @RequestMapping("/items")
 @AllArgsConstructor
@@ -31,11 +33,7 @@ public class ItemController {
     public List<ItemOwner> getItems(@RequestHeader("X-Sharer-User-Id") Integer userId,
                                     @RequestParam(defaultValue = "0") @Min(0) Integer from,
                                     @RequestParam(defaultValue = "20") @Min(1) @Max(100) Integer size) {
-        int numbInPage = from % size;
-        return itemService.getItems(userId, from, size)
-                .stream()
-                .skip(numbInPage)
-                .collect(Collectors.toList());
+        return itemService.getItems(userId, from, size);
     }
 
     @GetMapping("/{itemId}")
@@ -70,9 +68,9 @@ public class ItemController {
         if (text.isBlank()) {
             return new ArrayList<>();
         }
-        int numbInPage = from % size;
-        return itemService.searchItems(text, from, size).stream().map(ItemMapper::toItemDto)
-                .skip(numbInPage)
+        return itemService.searchItems(text, from, size)
+                .stream()
+                .map(ItemMapper::toItemDto)
                 .collect(Collectors.toList());
     }
 

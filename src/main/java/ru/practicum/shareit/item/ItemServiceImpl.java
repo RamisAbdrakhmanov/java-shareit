@@ -52,15 +52,17 @@ public class ItemServiceImpl implements ItemService {
     public Item updateItem(ItemDto itemDto, Integer userId) {
         Item item = getItemById(itemDto.getId());
 
+        if (!Objects.equals(item.getOwner().getId(), userId)) {
+            throw new UserValidException("User dont have this item");
+        }
+
         if (itemDto.getAvailable() != null) {
             item.setAvailable(itemDto.getAvailable());
         }
         if (itemDto.getName() != null) {
-            checkValidOwnItem(item.getId(), userId);
             item.setName(itemDto.getName());
         }
         if (itemDto.getDescription() != null) {
-            checkValidOwnItem(item.getId(), userId);
             item.setDescription(itemDto.getDescription());
         }
         return itemRepository.save(item);
@@ -117,12 +119,6 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public Item getItemById(Integer itemId) {
         return itemRepository.findById(itemId).orElseThrow(() -> new NotFoundException("Item not found"));
-    }
-
-    private void checkValidOwnItem(Integer itemId, Integer userId) {
-        if (!Objects.equals(itemId, userId)) {
-            throw new UserValidException("User dont have this item");
-        }
     }
 
 

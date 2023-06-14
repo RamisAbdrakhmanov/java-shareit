@@ -10,3 +10,4 @@ public class IBooking {
     private Integer id;
     private Integer bookerId;
 }
+
