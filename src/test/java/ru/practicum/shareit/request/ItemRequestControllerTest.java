@@ -31,7 +31,7 @@ import static ru.practicum.shareit.Creator.*;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class ItemRequestControllerTest {
 
-    private final String URL = "/requests";
+    private final String url = "/requests";
 
     @Autowired
     MockMvc mockMvc;
@@ -41,7 +41,7 @@ public class ItemRequestControllerTest {
         Integer userId = getUserId(mockMvc, userName, email);
         Integer requestId = getRequestId(mockMvc, userId, requestDescription);
 
-        mockMvc.perform(get(URL)
+        mockMvc.perform(get(url)
                         .header("X-Sharer-User-Id", userId))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -57,7 +57,7 @@ public class ItemRequestControllerTest {
         Integer userId = getUserId(mockMvc, userName, email);
         Integer requestId = getRequestId(mockMvc, userId, requestDescription);
 
-        mockMvc.perform(get(URL)
+        mockMvc.perform(get(url)
                         .header("X-Sharer-User-Id", userId))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -73,7 +73,7 @@ public class ItemRequestControllerTest {
         Integer userId = getUserId(mockMvc, userName, email);
         Integer requestId = getRequestId(mockMvc, userId, requestDescription);
 
-        mockMvc.perform(get(URL + "/{requestId}", requestId)
+        mockMvc.perform(get(url + "/{requestId}", requestId)
                         .header("X-Sharer-User-Id", userId))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -88,7 +88,7 @@ public class ItemRequestControllerTest {
         Integer userId = getUserId(mockMvc, userName, email);
         String requestJson = createRequestJson(requestDescription);
 
-        mockMvc.perform(post(URL)
+        mockMvc.perform(post(url)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestJson)
                         .header("X-Sharer-User-Id", userId))

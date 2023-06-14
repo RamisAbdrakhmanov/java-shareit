@@ -29,7 +29,7 @@ import static ru.practicum.shareit.Creator.*;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class BookingControllerTest {
 
-    private final String URL = "/bookings";
+    private final String url = "/bookings";
 
     @Autowired
     MockMvc mockMvc;
@@ -43,7 +43,7 @@ public class BookingControllerTest {
 
         String bookingJson = createBookingJson(itemId, start, end);
 
-        mockMvc.perform(post(URL)
+        mockMvc.perform(post(url)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(bookingJson)
                         .header("X-Sharer-User-Id", userId2))
@@ -65,7 +65,7 @@ public class BookingControllerTest {
 
         Integer bookingId = getBookingId(mockMvc, itemId, userId2);
 
-        mockMvc.perform(patch(URL + "/{bookingId}", bookingId)
+        mockMvc.perform(patch(url + "/{bookingId}", bookingId)
                         .header("X-Sharer-User-Id", userId)
                         .param("approved", String.valueOf(true)))
                 .andDo(print())
@@ -82,7 +82,7 @@ public class BookingControllerTest {
 
         Integer bookingId = getBookingId(mockMvc, itemId, userId2);
 
-        mockMvc.perform(get(URL + "/{bookingId}", bookingId)
+        mockMvc.perform(get(url + "/{bookingId}", bookingId)
                         .header("X-Sharer-User-Id", userId))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -102,7 +102,7 @@ public class BookingControllerTest {
 
         Integer bookingId = getBookingId(mockMvc, itemId, userId2);
 
-        mockMvc.perform(get(URL)
+        mockMvc.perform(get(url)
                         .header("X-Sharer-User-Id", userId2))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -122,7 +122,7 @@ public class BookingControllerTest {
 
         Integer bookingId = getBookingId(mockMvc, itemId, userId2);
 
-        mockMvc.perform(get(URL + "/owner", bookingId)
+        mockMvc.perform(get(url + "/owner", bookingId)
                         .header("X-Sharer-User-Id", userId))
                 .andDo(print())
                 .andExpect(status().isOk())

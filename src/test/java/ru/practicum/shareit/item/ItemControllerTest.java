@@ -30,7 +30,7 @@ import static ru.practicum.shareit.Creator.*;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class ItemControllerTest {
 
-    private final String URL = "/items";
+    private final String url = "/items";
 
 
     @Autowired
@@ -41,7 +41,7 @@ public class ItemControllerTest {
         Integer userId = getUserId(mockMvc, userName, email);
 
         String addItem = createItemDtoJson(itemName, itemDescription, available);
-        mockMvc.perform(post(URL)
+        mockMvc.perform(post(url)
                         .header("X-Sharer-User-Id", userId)
                         .content(addItem)
                         .contentType(MediaType.APPLICATION_JSON))
@@ -61,7 +61,7 @@ public class ItemControllerTest {
         Integer itemId = getItemId(mockMvc, userId, itemName, itemDescription, available);
 
 
-        mockMvc.perform(get(URL + "/{itemId}", itemId)
+        mockMvc.perform(get(url + "/{itemId}", itemId)
                         .header("X-Sharer-User-Id", userId))
                 .andExpect(status().isOk())
 
@@ -81,7 +81,7 @@ public class ItemControllerTest {
 
         String itemUpd = createItemDtoJson(itemName2, itemDescription2, availableUpd);
 
-        mockMvc.perform(patch(URL + "/{itemId}", itemId)
+        mockMvc.perform(patch(url + "/{itemId}", itemId)
                         .header("X-Sharer-User-Id", userId)
                         .content(itemUpd)
                         .contentType(MediaType.APPLICATION_JSON))
@@ -101,7 +101,7 @@ public class ItemControllerTest {
         Integer userId = getUserId(mockMvc, userName, email);
         Integer itemId = getItemId(mockMvc, userId, itemName, itemDescription, available);
 
-        mockMvc.perform(delete(URL + "/{itemId}", itemId)).andDo(print()).andExpect(status().isOk());
+        mockMvc.perform(delete(url + "/{itemId}", itemId)).andDo(print()).andExpect(status().isOk());
     }
 
     @Test
@@ -111,7 +111,7 @@ public class ItemControllerTest {
 
         Integer itemId2 = getItemId(mockMvc, userId, itemName2, itemDescription2, availableUpd);
 
-        mockMvc.perform(get(URL)
+        mockMvc.perform(get(url)
                         .header("X-Sharer-User-Id", userId)
                         .param("from", "0")
                         .param("size", "10"))
@@ -133,7 +133,7 @@ public class ItemControllerTest {
 
         Integer itemId2 = getItemId(mockMvc, userId, itemName2, itemDescription2, available);
 
-        mockMvc.perform(get(URL + "/search")
+        mockMvc.perform(get(url + "/search")
                         .header("X-Sharer-User-Id", userId)
                         .param("text", "дРель")
                         .param("from", "0")
