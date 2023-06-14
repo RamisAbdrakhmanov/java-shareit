@@ -11,7 +11,7 @@ import java.time.temporal.ChronoUnit;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
-public final class Creator {
+public final class CreatorController {
     public static final String userName = "user";
     public static final String email = "user@user.ru";
 
@@ -32,7 +32,6 @@ public final class Creator {
     public static final String statusApr = Status.APPROVED.toString();
 
     public static final String requestDescription = "Хотел бы воспользоваться щёткой для обуви";
-
 
     public static Integer getItemId(MockMvc mockMvc,
                                     Integer userId,
