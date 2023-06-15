@@ -21,7 +21,6 @@ import ru.practicum.shareit.request.ItemRequestServiceImpl;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserService;
 
-import javax.validation.ValidationException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -53,7 +52,7 @@ public class ItemServiceImpl implements ItemService {
         Item item = getItemById(itemDto.getId());
 
         if (!Objects.equals(item.getOwner().getId(), userId)) {
-            throw new ValidationException("User dont have this item");
+            throw new NotFoundException("User dont have this item");
         }
 
         if (itemDto.getAvailable() != null) {

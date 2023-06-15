@@ -12,6 +12,12 @@ import javax.validation.ValidationException;
 public class ErrorHandler {
 
     @ExceptionHandler
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handlerDateReleaseException(final ConflictException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handlerDateReleaseException(final NullPointerException e) {
         return new ErrorResponse(e.getMessage());
