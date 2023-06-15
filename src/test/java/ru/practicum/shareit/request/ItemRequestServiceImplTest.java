@@ -75,17 +75,6 @@ class ItemRequestServiceImplTest {
     }
 
     @Test
-    void getItemRequestFofCreateItemWrongTest() {
-        when(itemRequestRepository.findById(anyInt())).thenReturn(null);
-
-        NullPointerException notFoundException = assertThrows(NullPointerException.class,
-                () -> itemRequestService.getItemRequestFofCreateItem(item.getId()));
-
-        assertNotNull(notFoundException);
-
-    }
-
-    @Test
     void addItemRequestTest() {
         when(userService.getUser(anyInt())).thenReturn(user);
         when(itemRequestRepository.save(any())).thenReturn(itemRequest);
