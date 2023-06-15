@@ -8,9 +8,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.annotation.ComponentScan;
+import ru.practicum.shareit.exception.ConflictException;
 import ru.practicum.shareit.user.dto.UserDto;
 
-import javax.validation.ValidationException;
 import java.util.List;
 import java.util.Optional;
 
@@ -73,7 +73,7 @@ class UserServiceImplTest {
         when(userRepository.getReferenceById(any())).thenReturn(user);
         when(userRepository.findByEmail(any())).thenReturn(Optional.of(booker));
 
-        ValidationException validationException = assertThrows(ValidationException.class,
+        ConflictException validationException = assertThrows(ConflictException.class,
                 () -> userService.updateUser(userDto1));
 
         assertNotNull(validationException.getMessage());
