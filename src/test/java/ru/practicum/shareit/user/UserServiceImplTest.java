@@ -26,14 +26,14 @@ import static ru.practicum.shareit.CreatorService.userDto;
 class UserServiceImplTest {
 
     @Mock
-    private UserRepository repository;
+    private UserRepository userRepository;
 
     @InjectMocks
     private UserServiceImpl userService;
 
     @Test
     void getUsers() {
-        when(repository.findAll()).thenReturn(List.of(user));
+        when(userRepository.findAll()).thenReturn(List.of(user));
         List<User> lists = userService.getUsers();
 
         assertEquals(lists.size(), 1);
@@ -43,7 +43,7 @@ class UserServiceImplTest {
 
     @Test
     void addUser() {
-        when(repository.save(Mockito.any(User.class))).thenReturn(user);
+        when(userRepository.save(Mockito.any(User.class))).thenReturn(user);
 
         User user = userService.addUser(userDto);
 
@@ -56,8 +56,8 @@ class UserServiceImplTest {
     void updateUser() {
         UserDto userDto1 = new UserDto(1, "upd", "upd@mail.ru");
         User user = new User(1, userDto.getName(), userDto.getEmail());
-        when(repository.getReferenceById(any())).thenReturn(user);
-        when(repository.save(Mockito.any(User.class))).thenReturn(user);
+        when(userRepository.getReferenceById(any())).thenReturn(user);
+        when(userRepository.save(Mockito.any(User.class))).thenReturn(user);
 
         User userUpd = userService.updateUser(userDto1);
 
@@ -68,7 +68,7 @@ class UserServiceImplTest {
     @Test
     void getUser() {
 
-        when(repository.findById(anyInt())).thenReturn(Optional.of(user));
+        when(userRepository.findById(anyInt())).thenReturn(Optional.of(user));
         User getUser = userService.getUser(user.getId());
 
         Assertions.assertEquals(getUser.getName(), userName);

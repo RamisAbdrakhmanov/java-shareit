@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class IBooking {
+public class BookingIt {
 
     private Integer id;
     private Integer bookerId;

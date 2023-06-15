@@ -1,6 +1,6 @@
 package ru.practicum.shareit.item;
 
-import ru.practicum.shareit.booking.dto.IBooking;
+import ru.practicum.shareit.booking.dto.BookingIt;
 import ru.practicum.shareit.item.comment.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemIQ;
@@ -34,7 +34,7 @@ public class ItemMapper {
         );
     }
 
-    public static ItemOwner toItemOwner(Item item, IBooking last, IBooking next, List<CommentDto> comments) {
+    public static ItemOwner toItemOwner(Item item, BookingIt last, BookingIt next, List<CommentDto> comments) {
         return new ItemOwner(
                 item.getId(),
                 item.getName(),

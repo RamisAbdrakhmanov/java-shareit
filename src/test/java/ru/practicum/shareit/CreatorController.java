@@ -33,6 +33,10 @@ public final class CreatorController {
 
     public static final String requestDescription = "Хотел бы воспользоваться щёткой для обуви";
 
+    public static final String text = "Here is a comment here";
+    public static final LocalDateTime created = LocalDateTime.now().plusSeconds(4).truncatedTo(ChronoUnit.SECONDS);
+
+
     public static Integer getItemId(MockMvc mockMvc,
                                     Integer userId,
                                     String name,

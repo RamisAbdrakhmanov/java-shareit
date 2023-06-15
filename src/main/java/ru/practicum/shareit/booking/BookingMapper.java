@@ -1,7 +1,7 @@
 package ru.practicum.shareit.booking;
 
 import ru.practicum.shareit.booking.dto.BookingDto;
-import ru.practicum.shareit.booking.dto.IBooking;
+import ru.practicum.shareit.booking.dto.BookingIt;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
 
@@ -19,8 +19,8 @@ public class BookingMapper {
         );
     }
 
-    public static IBooking toIBooking(Optional<Booking> booking) {
-        return booking.map(value -> new IBooking(
+    public static BookingIt toBookingIt(Optional<Booking> booking) {
+        return booking.map(value -> new BookingIt(
                 value.getId(),
                 value.getBooker().getId()
         )).orElse(null);

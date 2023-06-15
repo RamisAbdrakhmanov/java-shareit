@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.Status;
-import ru.practicum.shareit.booking.dto.IBooking;
+import ru.practicum.shareit.booking.dto.BookingIt;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.UserValidException;
 import ru.practicum.shareit.item.comment.Comment;
@@ -80,13 +80,13 @@ public class ItemServiceImpl implements ItemService {
         Item item = itemRepository.findById(itemId).orElseThrow(() -> new NotFoundException("Item not found"));
 
         LocalDateTime now = LocalDateTime.now();
-        IBooking last = null;
-        IBooking next = null;
+        BookingIt last = null;
+        BookingIt next = null;
         List<Comment> comments = commentRepository.findAllByItemId(item.getId());
         if (Objects.equals(item.getOwner().getId(), userId)) {
-            last = BookingMapper.toIBooking(bookingRepository
+            last = BookingMapper.toBookingIt(bookingRepository
                     .findFirstByItemIdAndStartBeforeAndStatusOrderByEndDesc(item.getId(), now, Status.APPROVED));
-            next = BookingMapper.toIBooking(bookingRepository
+            next = BookingMapper.toBookingIt(bookingRepository
                     .findFirstByItemIdAndStartAfterAndStatusOrderByStartAsc(item.getId(), now, Status.APPROVED));
         }
 
