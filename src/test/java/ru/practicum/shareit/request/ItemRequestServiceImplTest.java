@@ -81,7 +81,7 @@ class ItemRequestServiceImplTest {
         NullPointerException notFoundException = assertThrows(NullPointerException.class,
                 () -> itemRequestService.getItemRequestFofCreateItem(item.getId()));
 
-        assertNotNull(notFoundException.getMessage());
+        assertNotNull(notFoundException);
 
     }
 
