@@ -6,6 +6,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.item.comment.CommentRepository;
 import ru.practicum.shareit.item.dto.ItemOwner;
@@ -23,6 +24,7 @@ import static org.mockito.Mockito.when;
 import static ru.practicum.shareit.CreatorController.*;
 import static ru.practicum.shareit.CreatorService.*;
 
+@Transactional
 @ExtendWith(MockitoExtension.class)
 @ComponentScan(basePackages = {"ru.yandex.practicum.shareit"})
 class ItemServiceImplTest {
@@ -49,7 +51,6 @@ class ItemServiceImplTest {
         assertEquals(item.getName(), itemName);
         assertEquals(item.getDescription(), itemDescription);
         assertEquals(item.getOwner().getId(), 1);
-
     }
 
     @Test
@@ -62,6 +63,9 @@ class ItemServiceImplTest {
         assertEquals(newItem.getName(), itemName2);
         assertEquals(newItem.getDescription(), itemDescription2);
         assertEquals(newItem.getOwner().getId(), 1);
+
+        item.setName(itemName);
+        item.setDescription(itemDescription);
     }
 
     @Test
@@ -71,6 +75,7 @@ class ItemServiceImplTest {
 
     @Test
     void getItem() {
+
         when(itemRepository.findById(anyInt())).thenReturn(Optional.of(item));
         when(commentRepository.findAllByItemId(anyInt())).thenReturn(List.of(comment));
         when(bookingRepository.findFirstByItemIdAndStartBeforeAndStatusOrderByEndDesc(anyInt(), any(), any()))
@@ -80,6 +85,7 @@ class ItemServiceImplTest {
 
         ItemOwner newItem = itemService.getItem(item.getId(), user.getId());
 
+        System.out.println(item);
         assertEquals(newItem.getId(), item.getId());
         assertEquals(newItem.getNextBooking(), nextIt);
         assertEquals(newItem.getLastBooking(), lastIt);
@@ -87,6 +93,7 @@ class ItemServiceImplTest {
         assertEquals(newItem.getDescription(), itemDescription);
         assertEquals(newItem.getAvailable(), available);
         assertEquals(newItem.getComments(), List.of(commentDto));
+
     }
 
     @Test
