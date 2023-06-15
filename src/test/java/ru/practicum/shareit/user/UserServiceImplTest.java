@@ -10,16 +10,15 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.annotation.ComponentScan;
 import ru.practicum.shareit.user.dto.UserDto;
 
+import javax.validation.ValidationException;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static ru.practicum.shareit.CreatorController.email;
 import static ru.practicum.shareit.CreatorController.userName;
-import static ru.practicum.shareit.CreatorService.user;
-import static ru.practicum.shareit.CreatorService.userDto;
+import static ru.practicum.shareit.CreatorService.*;
 
 @ExtendWith(MockitoExtension.class)
 @ComponentScan(basePackages = {"ru.yandex.practicum.shareit"})
@@ -32,7 +31,7 @@ class UserServiceImplTest {
     private UserServiceImpl userService;
 
     @Test
-    void getUsers() {
+    void getUsersTest() {
         when(userRepository.findAll()).thenReturn(List.of(user));
 
         List<User> lists = userService.getUsers();
@@ -43,7 +42,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void addUser() {
+    void addUserTest() {
         when(userRepository.save(Mockito.any(User.class))).thenReturn(user);
 
         User user = userService.addUser(userDto);
@@ -53,7 +52,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void updateUser() {
+    void updateUserTest() {
         UserDto userDto1 = new UserDto(1, "upd", "upd@mail.ru");
         User user = new User(1, userDto.getName(), userDto.getEmail());
 
@@ -67,7 +66,21 @@ class UserServiceImplTest {
     }
 
     @Test
-    void getUser() {
+    void updateUserWrongEmail() {
+        UserDto userDto1 = new UserDto(1, "upd", "upd@mail.ru");
+        User user = new User(1, userDto.getName(), userDto.getEmail());
+
+        when(userRepository.getReferenceById(any())).thenReturn(user);
+        when(userRepository.findByEmail(any())).thenReturn(Optional.of(booker));
+
+        ValidationException validationException = assertThrows(ValidationException.class,
+                () -> userService.updateUser(userDto1));
+
+        assertNotNull(validationException.getMessage());
+    }
+
+    @Test
+    void getUserTest() {
         when(userRepository.findById(anyInt())).thenReturn(Optional.of(user));
 
         User getUser = userService.getUser(user.getId());
@@ -77,7 +90,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void deleteUser() {
+    void deleteUserTest() {
         assertDoesNotThrow(() -> userService.deleteUser(user.getId()));
     }
 }

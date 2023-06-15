@@ -83,6 +83,7 @@ class ItemServiceImplTest {
         when(bookingRepository.findFirstByItemIdAndStartAfterAndStatusOrderByStartAsc(anyInt(), any(), any()))
                 .thenReturn(Optional.of(next));
 
+
         ItemOwner newItem = itemService.getItem(item.getId(), user.getId());
 
         assertEquals(newItem.getId(), item.getId());
@@ -114,6 +115,7 @@ class ItemServiceImplTest {
                 .thenReturn(Optional.of(last));
         when(bookingRepository.findFirstByItemIdAndStartAfterAndStatusOrderByStartAsc(anyInt(), any(), any()))
                 .thenReturn(Optional.of(next));
+        ItemMapper.toItemIQ(new Item(10, itemName, itemDescription, false, user, itemRequest));
 
         List<ItemOwner> list = itemService.getItems(1, 0, 20);
 

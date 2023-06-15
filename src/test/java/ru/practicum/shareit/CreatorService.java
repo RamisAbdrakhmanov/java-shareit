@@ -9,10 +9,14 @@ import ru.practicum.shareit.item.comment.Comment;
 import ru.practicum.shareit.item.comment.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.request.ItemRequest;
+import ru.practicum.shareit.request.ItemRequestMapper;
+import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.dto.UserDto;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Optional;
 
 import static ru.practicum.shareit.CreatorController.*;
@@ -42,4 +46,6 @@ public class CreatorService {
     public static final BookingIt lastIt = BookingMapper.toBookingIt(Optional.of(last));
     public static final BookingIt nextIt = BookingMapper.toBookingIt(Optional.of(next));
     public static final BookingDto bookingDto = new BookingDto(start, end, item.getId());
+    public static final ItemRequest itemRequest = new ItemRequest(1, itemDescription, booker, LocalDateTime.now());
+    public static final ItemRequestDto itemRequestDto = ItemRequestMapper.toItemRequestDto(itemRequest, new ArrayList<>());
 }
