@@ -46,6 +46,7 @@ class ItemServiceImplTest {
     void addItem() {
         when(mockUserService.getUser(any())).thenReturn(user);
         when(itemRepository.save(any())).thenReturn(item);
+
         Item item = itemService.addItem(itemDto, 1);
 
         assertEquals(item.getName(), itemName);
@@ -75,7 +76,6 @@ class ItemServiceImplTest {
 
     @Test
     void getItem() {
-
         when(itemRepository.findById(anyInt())).thenReturn(Optional.of(item));
         when(commentRepository.findAllByItemId(anyInt())).thenReturn(List.of(comment));
         when(bookingRepository.findFirstByItemIdAndStartBeforeAndStatusOrderByEndDesc(anyInt(), any(), any()))
@@ -85,7 +85,6 @@ class ItemServiceImplTest {
 
         ItemOwner newItem = itemService.getItem(item.getId(), user.getId());
 
-        System.out.println(item);
         assertEquals(newItem.getId(), item.getId());
         assertEquals(newItem.getNextBooking(), nextIt);
         assertEquals(newItem.getLastBooking(), lastIt);
@@ -101,6 +100,7 @@ class ItemServiceImplTest {
         when(itemRepository.findItemByNameAndDescription(any(), any())).thenReturn(List.of(item));
 
         List<Item> list = itemService.searchItems("дрель", 0, 20);
+
         assertEquals(list.size(), 1);
         assertEquals(list.get(0), item);
     }
@@ -114,6 +114,7 @@ class ItemServiceImplTest {
                 .thenReturn(Optional.of(last));
         when(bookingRepository.findFirstByItemIdAndStartAfterAndStatusOrderByStartAsc(anyInt(), any(), any()))
                 .thenReturn(Optional.of(next));
+
         List<ItemOwner> list = itemService.getItems(1, 0, 20);
 
         assertEquals(list.size(), 1);

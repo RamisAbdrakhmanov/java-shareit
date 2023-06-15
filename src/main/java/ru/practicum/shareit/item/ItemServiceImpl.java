@@ -10,7 +10,6 @@ import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.Status;
 import ru.practicum.shareit.booking.dto.BookingIt;
 import ru.practicum.shareit.exception.NotFoundException;
-import ru.practicum.shareit.exception.UserValidException;
 import ru.practicum.shareit.item.comment.Comment;
 import ru.practicum.shareit.item.comment.CommentMapper;
 import ru.practicum.shareit.item.comment.CommentRepository;
@@ -22,6 +21,7 @@ import ru.practicum.shareit.request.ItemRequestServiceImpl;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserService;
 
+import javax.validation.ValidationException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -53,7 +53,7 @@ public class ItemServiceImpl implements ItemService {
         Item item = getItemById(itemDto.getId());
 
         if (!Objects.equals(item.getOwner().getId(), userId)) {
-            throw new UserValidException("User dont have this item");
+            throw new ValidationException("User dont have this item");
         }
 
         if (itemDto.getAvailable() != null) {

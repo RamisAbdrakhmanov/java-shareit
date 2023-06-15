@@ -3,6 +3,7 @@ package ru.practicum.shareit;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.Status;
+import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingIt;
 import ru.practicum.shareit.item.comment.Comment;
 import ru.practicum.shareit.item.comment.dto.CommentDto;
@@ -19,7 +20,7 @@ import static ru.practicum.shareit.CreatorController.*;
 public class CreatorService {
     public static final UserDto userDto = new UserDto(null, userName, email);
     public static final User user = new User(1, userName, email);
-    public static final User booker = new User(1, userName2, email2);
+    public static final User booker = new User(2, userName2, email2);
     public static final ItemDto itemDto = new ItemDto(null, itemName, itemDescription, available, null);
     public static final ItemDto itemDtoUpd = new ItemDto(1, itemName2, itemDescription2, available, null);
     public static final Item item = new Item(1, itemName, itemDescription, available, user, null);
@@ -33,11 +34,12 @@ public class CreatorService {
             booker,
             Status.APPROVED);
     public static final Booking next = new Booking(1,
-            LocalDateTime.now().plusDays(2),
-            LocalDateTime.now().plusDays(1),
+            start,
+            end,
             item,
             booker,
             Status.APPROVED);
     public static final BookingIt lastIt = BookingMapper.toBookingIt(Optional.of(last));
     public static final BookingIt nextIt = BookingMapper.toBookingIt(Optional.of(next));
+    public static final BookingDto bookingDto = new BookingDto(start, end, item.getId());
 }

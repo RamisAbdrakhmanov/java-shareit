@@ -34,6 +34,7 @@ class UserServiceImplTest {
     @Test
     void getUsers() {
         when(userRepository.findAll()).thenReturn(List.of(user));
+
         List<User> lists = userService.getUsers();
 
         assertEquals(lists.size(), 1);
@@ -47,7 +48,6 @@ class UserServiceImplTest {
 
         User user = userService.addUser(userDto);
 
-
         assertEquals(user.getName(), userName);
         assertEquals(user.getEmail(), email);
     }
@@ -56,6 +56,7 @@ class UserServiceImplTest {
     void updateUser() {
         UserDto userDto1 = new UserDto(1, "upd", "upd@mail.ru");
         User user = new User(1, userDto.getName(), userDto.getEmail());
+
         when(userRepository.getReferenceById(any())).thenReturn(user);
         when(userRepository.save(Mockito.any(User.class))).thenReturn(user);
 
@@ -67,8 +68,8 @@ class UserServiceImplTest {
 
     @Test
     void getUser() {
-
         when(userRepository.findById(anyInt())).thenReturn(Optional.of(user));
+
         User getUser = userService.getUser(user.getId());
 
         Assertions.assertEquals(getUser.getName(), userName);

@@ -26,8 +26,8 @@ public final class CreatorController {
     public static final String itemDescription2 = "Аккумуляторная дрель";
     public static final boolean availableUpd = false;
 
-    public static final LocalDateTime start = LocalDateTime.now().plusSeconds(2).truncatedTo(ChronoUnit.SECONDS);
-    public static final LocalDateTime end = LocalDateTime.now().plusSeconds(3).truncatedTo(ChronoUnit.SECONDS);
+    public static final LocalDateTime start = LocalDateTime.now().plusMinutes(2).truncatedTo(ChronoUnit.SECONDS);
+    public static final LocalDateTime end = LocalDateTime.now().plusMinutes(3).truncatedTo(ChronoUnit.SECONDS);
     public static final String statusWait = Status.WAITING.toString();
     public static final String statusApr = Status.APPROVED.toString();
 

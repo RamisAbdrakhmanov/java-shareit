@@ -1,4 +1,4 @@
-package ru.practicum.shareit.boking;
+package ru.practicum.shareit.booking;
 
 import lombok.RequiredArgsConstructor;
 import org.junit.Test;
