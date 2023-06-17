@@ -3,7 +3,6 @@ package ru.practicum.shareit;
 import com.jayway.jsonpath.JsonPath;
 import lombok.experimental.UtilityClass;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Component;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import ru.practicum.shareit.booking.Status;
