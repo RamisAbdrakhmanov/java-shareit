@@ -68,7 +68,7 @@ public class UserControllerTest {
 
         mockMvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON).content(userJson))
                 .andDo(print())
-                .andExpect(status().is5xxServerError());
+                .andExpect(status().isBadRequest());
 
     }
 
@@ -79,7 +79,7 @@ public class UserControllerTest {
 
         mockMvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON).content(userJson))
                 .andDo(print())
-                .andExpect(status().is5xxServerError());
+                .andExpect(status().isBadRequest());
 
     }
 
@@ -91,7 +91,7 @@ public class UserControllerTest {
 
         mockMvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON).content(userJson))
                 .andDo(print())
-                .andExpect(status().is5xxServerError());
+                .andExpect(status().isBadRequest());
 
     }
 
