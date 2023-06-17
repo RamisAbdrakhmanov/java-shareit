@@ -1,7 +1,9 @@
 package ru.practicum.shareit.item;
 
+import lombok.experimental.UtilityClass;
 import ru.practicum.shareit.booking.dto.BookingIt;
 import ru.practicum.shareit.item.comment.dto.CommentDto;
+import ru.practicum.shareit.item.dto.ItemB;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemIQ;
 import ru.practicum.shareit.item.dto.ItemOwner;
@@ -11,9 +13,10 @@ import ru.practicum.shareit.user.User;
 
 import java.util.List;
 
+@UtilityClass
 public class ItemMapper {
 
-    public static ItemDto toItemDto(Item item) {
+    public ItemDto toItemDto(Item item) {
         return new ItemDto(
                 item.getId(),
                 item.getName(),
@@ -23,7 +26,7 @@ public class ItemMapper {
         );
     }
 
-    public static Item toItem(ItemDto itemDto, User user, ItemRequest itemRequest) {
+    public Item toItem(ItemDto itemDto, User user, ItemRequest itemRequest) {
         return new Item(
                 itemDto.getId(),
                 itemDto.getName(),
@@ -34,7 +37,7 @@ public class ItemMapper {
         );
     }
 
-    public static ItemOwner toItemOwner(Item item, BookingIt last, BookingIt next, List<CommentDto> comments) {
+    public ItemOwner toItemOwner(Item item, BookingIt last, BookingIt next, List<CommentDto> comments) {
         return new ItemOwner(
                 item.getId(),
                 item.getName(),
@@ -46,7 +49,7 @@ public class ItemMapper {
         );
     }
 
-    public static ItemIQ toItemIQ(Item item) {
+    public ItemIQ toItemIQ(Item item) {
         return new ItemIQ(
                 item.getId(),
                 item.getName(),
@@ -54,6 +57,13 @@ public class ItemMapper {
                 item.getDescription(),
                 item.getAvailable(),
                 item.getItemRequest().getId()
+        );
+    }
+
+    public ItemB toItemB(Item item) {
+        return new ItemB(
+                item.getId(),
+                item.getName()
         );
     }
 

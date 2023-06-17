@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -24,7 +23,6 @@ import static ru.practicum.shareit.CreatorController.*;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-@ComponentScan(basePackages = {"ru.yandex.practicum.shareit"})
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class BookingControllerTest {
@@ -32,7 +30,7 @@ public class BookingControllerTest {
     private final String url = "/bookings";
 
     @Autowired
-    MockMvc mockMvc;
+    private MockMvc mockMvc;
 
     @Test
     public void addBookingTest() throws Exception {
@@ -51,7 +49,7 @@ public class BookingControllerTest {
                 .andExpect(status().isOk())
 
                 .andExpect(jsonPath("$.item.id").value(itemId))
-                .andExpect(jsonPath("$.item.owner.id").value(userId))
+                .andExpect(jsonPath("$.item.name").value(itemName))
                 .andExpect(jsonPath("$.booker.id").value(userId2))
                 .andExpect(jsonPath("$.status").value(statusWait));
     }
@@ -88,7 +86,7 @@ public class BookingControllerTest {
                 .andExpect(status().isOk())
 
                 .andExpect(jsonPath("$.item.id").value(itemId))
-                .andExpect(jsonPath("$.item.owner.id").value(userId))
+                .andExpect(jsonPath("$.item.name").value(itemName))
                 .andExpect(jsonPath("$.booker.id").value(userId2))
                 .andExpect(jsonPath("$.status").value(statusWait));
     }
@@ -108,7 +106,7 @@ public class BookingControllerTest {
                 .andExpect(status().isOk())
 
                 .andExpect(jsonPath("$[0].item.id").value(itemId))
-                .andExpect(jsonPath("$[0].item.owner.id").value(userId))
+                .andExpect(jsonPath("$[0].item.name").value(itemName))
                 .andExpect(jsonPath("$[0].booker.id").value(userId2))
                 .andExpect(jsonPath("$[0].status").value(statusWait));
     }
@@ -128,7 +126,7 @@ public class BookingControllerTest {
                 .andExpect(status().isOk())
 
                 .andExpect(jsonPath("$[0].item.id").value(itemId))
-                .andExpect(jsonPath("$[0].item.owner.id").value(userId))
+                .andExpect(jsonPath("$[0].item.name").value(itemName))
                 .andExpect(jsonPath("$[0].booker.id").value(userId2))
                 .andExpect(jsonPath("$[0].status").value(statusWait));
     }

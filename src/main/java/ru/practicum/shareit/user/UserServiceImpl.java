@@ -36,7 +36,7 @@ public class UserServiceImpl implements UserService {
             Optional<User> checkUser = repository.findByEmail(userDto.getEmail());
             if (checkUser.isPresent()) {
                 if (!Objects.equals(checkUser.get().getId(), userDto.getId())) {
-                    throw new ConflictException("email is busy");
+                    throw new ConflictException("Email is busy");
                 }
             }
             user.setEmail(userDto.getEmail());

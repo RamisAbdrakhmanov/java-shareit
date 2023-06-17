@@ -12,32 +12,38 @@ import javax.validation.ValidationException;
 public class ErrorHandler {
 
     @ExceptionHandler
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorResponse handlerThrowable(final Error e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handlerDateReleaseException(final ConflictException e) {
+    public ErrorResponse handlerConflictException(final ConflictException e) {
         return new ErrorResponse(e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handlerDateReleaseException(final NullPointerException e) {
+    public ErrorResponse handlerIllegalArgumentException(final IllegalArgumentException e) {
         return new ErrorResponse(e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handlerDateReleaseException(final ValidationException e) {
+    public ErrorResponse handlerDateValidationException(final ValidationException e) {
         return new ErrorResponse(e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handlerDateReleaseException(final NotFoundException e) {
+    public ErrorResponse handlerNotFoundException(final NotFoundException e) {
         return new ErrorResponse(e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handlerDateReleaseException(final EntityNotFoundException e) {
+    public ErrorResponse handlerEntityNotFoundException(final EntityNotFoundException e) {
         return new ErrorResponse(e.getMessage());
     }
 }

@@ -9,13 +9,13 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
-import ru.practicum.shareit.user.UserService;
+import ru.practicum.shareit.user.UserRepository;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
@@ -29,7 +29,7 @@ class ItemRequestServiceImplTest {
     @Mock
     private ItemRequestRepository itemRequestRepository;
     @Mock
-    private UserService userService;
+    private UserRepository userRepository;
     @Mock
     private ItemRepository itemRepository;
     @InjectMocks
@@ -37,7 +37,7 @@ class ItemRequestServiceImplTest {
 
     @Test
     void getItemRequestsAllTest() {
-        when(userService.getUser(anyInt())).thenReturn(user);
+        when(userRepository.findById(anyInt())).thenReturn(Optional.of(booker));
 
         List<ItemRequestDto> list = itemRequestService.getItemRequestsForRequester(anyInt());
 
@@ -46,7 +46,7 @@ class ItemRequestServiceImplTest {
 
     @Test
     void getItemRequestsForRequester() {
-        when(userService.getUser(anyInt())).thenReturn(user);
+        when(userRepository.findById(anyInt())).thenReturn(Optional.of(booker));
         when(itemRepository.findAllByItemRequestId(anyInt())).thenReturn(new ArrayList<>());
         when(itemRequestRepository.findAllByRequester(any())).thenReturn(List.of(itemRequest));
 
@@ -57,6 +57,7 @@ class ItemRequestServiceImplTest {
 
     @Test
     void getItemRequest() {
+        when(userRepository.findById(anyInt())).thenReturn(Optional.of(booker));
         when(itemRequestRepository.findById(anyInt())).thenReturn(Optional.of(itemRequest));
 
         ItemRequestDto requestDto = itemRequestService.getItemRequest(itemRequest.getId(), 1);
@@ -76,7 +77,7 @@ class ItemRequestServiceImplTest {
 
     @Test
     void addItemRequestTest() {
-        when(userService.getUser(anyInt())).thenReturn(user);
+        when(userRepository.findById(anyInt())).thenReturn(Optional.of(booker));
         when(itemRequestRepository.save(any())).thenReturn(itemRequest);
         when(itemRepository.findAllByItemRequestId(anyInt())).thenReturn(new ArrayList<>());
 

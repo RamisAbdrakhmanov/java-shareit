@@ -1,7 +1,9 @@
 package ru.practicum.shareit;
 
 import com.jayway.jsonpath.JsonPath;
+import lombok.experimental.UtilityClass;
 import org.springframework.http.MediaType;
+import org.springframework.stereotype.Component;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import ru.practicum.shareit.booking.Status;
@@ -11,37 +13,38 @@ import java.time.temporal.ChronoUnit;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
-public final class CreatorController {
-    public static final String userName = "user";
-    public static final String email = "user@user.ru";
+@UtilityClass
+public class CreatorController {
+    public final String userName = "user";
+    public final String email = "user@user.ru";
 
-    public static final String userName2 = "update";
-    public static final String email2 = "update@user.com";
+    public final String userName2 = "update";
+    public final String email2 = "update@user.com";
 
-    public static final String itemName = "Дрель";
-    public static final String itemDescription = "Простая дрель";
-    public static final boolean available = true;
+    public final String itemName = "Дрель";
+    public final String itemDescription = "Простая дрель";
+    public final boolean available = true;
 
-    public static final String itemName2 = "Дрель+";
-    public static final String itemDescription2 = "Аккумуляторная дрель";
-    public static final boolean availableUpd = false;
+    public final String itemName2 = "Дрель+";
+    public final String itemDescription2 = "Аккумуляторная дрель";
+    public final boolean availableUpd = false;
 
-    public static final LocalDateTime start = LocalDateTime.now().plusMinutes(2).truncatedTo(ChronoUnit.SECONDS);
-    public static final LocalDateTime end = LocalDateTime.now().plusMinutes(3).truncatedTo(ChronoUnit.SECONDS);
-    public static final String statusWait = Status.WAITING.toString();
-    public static final String statusApr = Status.APPROVED.toString();
+    public final LocalDateTime start = LocalDateTime.now().plusMinutes(2).truncatedTo(ChronoUnit.SECONDS);
+    public final LocalDateTime end = LocalDateTime.now().plusMinutes(3).truncatedTo(ChronoUnit.SECONDS);
+    public final String statusWait = Status.WAITING.toString();
+    public final String statusApr = Status.APPROVED.toString();
 
-    public static final String requestDescription = "Хотел бы воспользоваться щёткой для обуви";
+    public final String requestDescription = "Хотел бы воспользоваться щёткой для обуви";
 
-    public static final String text = "Here is a comment here";
-    public static final LocalDateTime created = LocalDateTime.now().plusSeconds(4).truncatedTo(ChronoUnit.SECONDS);
+    public final String text = "Here is a comment here";
+    public final LocalDateTime created = LocalDateTime.now().plusSeconds(4).truncatedTo(ChronoUnit.SECONDS);
 
 
-    public static Integer getItemId(MockMvc mockMvc,
-                                    Integer userId,
-                                    String name,
-                                    String description,
-                                    boolean available) throws Exception {
+    public Integer getItemId(MockMvc mockMvc,
+                             Integer userId,
+                             String name,
+                             String description,
+                             boolean available) throws Exception {
 
         String item = createItemDtoJson(name, description, available);
 
@@ -55,7 +58,7 @@ public final class CreatorController {
         return JsonPath.read(resultItem.getResponse().getContentAsString(), "$.id");
     }
 
-    public static String createItemDtoJson(String name, String description, boolean available) {
+    public String createItemDtoJson(String name, String description, boolean available) {
         return "{\n" +
                 "    \"name\": \"" + name + "\",\n" +
                 "    \"description\": \"" + description + "\",\n" +
@@ -63,7 +66,7 @@ public final class CreatorController {
                 "}";
     }
 
-    public static Integer getUserId(MockMvc mockMvc, String name, String email) throws Exception {
+    public Integer getUserId(MockMvc mockMvc, String name, String email) throws Exception {
         String addUser = createUserJson(name, email);
 
         MvcResult result = mockMvc.perform(post("/users")
@@ -74,7 +77,7 @@ public final class CreatorController {
         return JsonPath.read(result.getResponse().getContentAsString(), "$.id");
     }
 
-    public static String createUserJson(String name, String email) {
+    public String createUserJson(String name, String email) {
         return "{\n" +
                 "    \"name\": \"" + name + "\",\n" +
                 "    \"email\": \"" + email + "\"\n" +
@@ -82,7 +85,7 @@ public final class CreatorController {
 
     }
 
-    public static Integer getBookingId(MockMvc mockMvc, Integer itemId, Integer userId2) throws Exception {
+    public Integer getBookingId(MockMvc mockMvc, Integer itemId, Integer userId2) throws Exception {
         String bookingJson = createBookingJson(itemId, start, end);
 
         MvcResult result = mockMvc.perform(post("/bookings")
@@ -94,7 +97,7 @@ public final class CreatorController {
         return JsonPath.read(result.getResponse().getContentAsString(), "$.id");
     }
 
-    public static String createBookingJson(Integer itemId, LocalDateTime start, LocalDateTime end) {
+    public String createBookingJson(Integer itemId, LocalDateTime start, LocalDateTime end) {
 
 
         return "{\n" +
@@ -104,7 +107,7 @@ public final class CreatorController {
                 "}";
     }
 
-    public static Integer getRequestId(MockMvc mockMvc, Integer userId, String description) throws Exception {
+    public Integer getRequestId(MockMvc mockMvc, Integer userId, String description) throws Exception {
         String requestJson = createRequestJson(description);
 
         MvcResult result = mockMvc.perform(post("/requests")
@@ -116,7 +119,7 @@ public final class CreatorController {
         return JsonPath.read(result.getResponse().getContentAsString(), "$.id");
     }
 
-    public static String createRequestJson(String text) {
+    public String createRequestJson(String text) {
         return "{\n" +
                 "    \"description\": \"" + text + "\"\n" +
                 "}";

@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-interface ItemRequestRepository extends JpaRepository<ItemRequest, Pageable> {
+public interface ItemRequestRepository extends JpaRepository<ItemRequest, Pageable> {
 
     List<ItemRequest> findAllByRequester(User requester);
 

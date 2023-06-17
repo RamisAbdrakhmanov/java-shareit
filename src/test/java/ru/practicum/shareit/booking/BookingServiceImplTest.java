@@ -8,8 +8,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exception.NotFoundException;
-import ru.practicum.shareit.item.ItemService;
-import ru.practicum.shareit.user.UserService;
+import ru.practicum.shareit.item.ItemRepository;
+import ru.practicum.shareit.user.UserRepository;
 
 import javax.validation.ValidationException;
 import java.util.List;
@@ -30,9 +30,9 @@ class BookingServiceImplTest {
     @Mock
     private BookingRepository bookingRepository;
     @Mock
-    private UserService userService;
+    private UserRepository userRepository;
     @Mock
-    private ItemService itemService;
+    private ItemRepository itemRepository;
 
     @InjectMocks
     private BookingServiceImpl bookingService;
@@ -47,8 +47,8 @@ class BookingServiceImplTest {
 
     @Test
     void addBookingTest() {
-        when(userService.getUser(anyInt())).thenReturn(booker);
-        when(itemService.getItemById(anyInt())).thenReturn(item);
+        when(userRepository.findById(anyInt())).thenReturn(Optional.of(booker));
+        when(itemRepository.findById(anyInt())).thenReturn(Optional.of(item));
         when(bookingRepository.save(any())).thenReturn(next);
 
         Booking booking = bookingService.addBooking(bookingDto, booker.getId());
@@ -96,9 +96,10 @@ class BookingServiceImplTest {
 
     @Test
     void getBookingsTest() {
+        when(userRepository.findById(anyInt())).thenReturn(Optional.of(booker));
         when(bookingRepository.findAllByBookerIdOrderByStartDesc(anyInt(), any())).thenReturn(List.of(last, next));
 
-        List<Booking> list = bookingService.getBookings(0, 20, booker.getId(), "ALL");
+        List<Booking> list = bookingService.getBookings(0, 20, booker.getId(), State.ALL);
 
         assertEquals(list, List.of(last, next));
 
@@ -106,9 +107,10 @@ class BookingServiceImplTest {
 
     @Test
     void getBookingsOwnerTest() {
+        when(userRepository.findById(anyInt())).thenReturn(Optional.of(booker));
         when(bookingRepository.findAllByItemOwnerIdOrderByStartDesc(anyInt(), any())).thenReturn(List.of(last, next));
 
-        List<Booking> list = bookingService.getBookingsOwner(0, 20, user.getId(), "ALL");
+        List<Booking> list = bookingService.getBookingsOwner(0, 20, user.getId(), State.ALL);
 
         assertEquals(list, List.of(last, next));
     }

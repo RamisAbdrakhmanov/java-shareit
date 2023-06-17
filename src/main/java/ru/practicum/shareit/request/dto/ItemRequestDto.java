@@ -27,5 +27,6 @@ public class ItemRequestDto {
 
     private LocalDateTime created;
 
+    @EqualsAndHashCode.Exclude
     private List<ItemIQ> items;
 }

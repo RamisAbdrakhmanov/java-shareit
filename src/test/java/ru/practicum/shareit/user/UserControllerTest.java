@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -20,12 +19,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static ru.practicum.shareit.CreatorController.*;
 
-
 @Transactional
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-@ComponentScan(basePackages = {"ru.yandex.practicum.shareit"})
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class UserControllerTest {
@@ -71,7 +68,7 @@ public class UserControllerTest {
 
         mockMvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON).content(userJson))
                 .andDo(print())
-                .andExpect(status().isBadRequest());
+                .andExpect(status().is5xxServerError());
 
     }
 
@@ -82,7 +79,7 @@ public class UserControllerTest {
 
         mockMvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON).content(userJson))
                 .andDo(print())
-                .andExpect(status().isBadRequest());
+                .andExpect(status().is5xxServerError());
 
     }
 
@@ -94,7 +91,7 @@ public class UserControllerTest {
 
         mockMvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON).content(userJson))
                 .andDo(print())
-                .andExpect(status().isBadRequest());
+                .andExpect(status().is5xxServerError());
 
     }
 

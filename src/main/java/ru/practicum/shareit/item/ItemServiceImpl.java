@@ -1,7 +1,6 @@
 package ru.practicum.shareit.item;
 
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,6 +8,7 @@ import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.Status;
 import ru.practicum.shareit.booking.dto.BookingIt;
+import ru.practicum.shareit.common.MyPageRequest;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.comment.Comment;
 import ru.practicum.shareit.item.comment.CommentMapper;
@@ -19,7 +19,7 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.request.ItemRequestServiceImpl;
 import ru.practicum.shareit.user.User;
-import ru.practicum.shareit.user.UserService;
+import ru.practicum.shareit.user.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -33,13 +33,13 @@ public class ItemServiceImpl implements ItemService {
 
     private ItemRepository itemRepository;
     private BookingRepository bookingRepository;
-    private UserService userService;
+    private UserRepository userRepository;
     private CommentRepository commentRepository;
     private ItemRequestServiceImpl itemRequestService;
 
     @Override
     public Item addItem(ItemDto itemDto, Integer userId) {
-        User user = userService.getUser(userId);
+        User user = getUser(userId);
         ItemRequest itemRequest =
                 itemDto.getRequestId() != null ? itemRequestService
                         .getItemRequestFofCreateItem(itemDto.getRequestId()) : null;
@@ -101,8 +101,8 @@ public class ItemServiceImpl implements ItemService {
     @Transactional(readOnly = true)
     @Override
     public List<ItemOwner> getItems(Integer userId, Integer from, Integer size) {
-        userService.getUser(userId);
-        Pageable pageable = PageRequest.of(from / size, size);
+        getUser(userId);
+        Pageable pageable = MyPageRequest.of(from, size);
         List<Item> list = itemRepository.findAllByOwnerId(userId, pageable);
         return list.stream().map(item -> getItem(item.getId(), userId)).collect(Collectors.toList());
     }
@@ -110,7 +110,7 @@ public class ItemServiceImpl implements ItemService {
     @Transactional(readOnly = true)
     @Override
     public List<Item> searchItems(String substring, Integer from, Integer size) {
-        Pageable pageable = PageRequest.of(from / size, size);
+        Pageable pageable = MyPageRequest.of(from, size);
         return itemRepository.findItemByNameAndDescription(substring, pageable);
     }
 
@@ -120,5 +120,7 @@ public class ItemServiceImpl implements ItemService {
         return itemRepository.findById(itemId).orElseThrow(() -> new NotFoundException("Item not found"));
     }
 
-
+    private User getUser(Integer userId) {
+        return userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
+    }
 }

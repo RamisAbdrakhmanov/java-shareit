@@ -11,7 +11,7 @@ import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.item.comment.CommentRepository;
 import ru.practicum.shareit.item.dto.ItemOwner;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.user.UserService;
+import ru.practicum.shareit.user.UserRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -34,7 +34,7 @@ class ItemServiceImplTest {
     @Mock
     private BookingRepository bookingRepository;
     @Mock
-    private UserService mockUserService;
+    private UserRepository userRepository;
     @Mock
     private CommentRepository commentRepository;
 
@@ -44,7 +44,7 @@ class ItemServiceImplTest {
 
     @Test
     void addItem() {
-        when(mockUserService.getUser(any())).thenReturn(user);
+        when(userRepository.findById(anyInt())).thenReturn(Optional.of(booker));
         when(itemRepository.save(any())).thenReturn(item);
 
         Item item = itemService.addItem(itemDto, 1);
@@ -108,6 +108,7 @@ class ItemServiceImplTest {
 
     @Test
     void getItems() {
+        when(userRepository.findById(anyInt())).thenReturn(Optional.of(booker));
         when(itemRepository.findAllByOwnerId(anyInt(), any())).thenReturn(List.of(item));
         when(itemRepository.findById(anyInt())).thenReturn(Optional.of(item));
         when(commentRepository.findAllByItemId(anyInt())).thenReturn(List.of(comment));
