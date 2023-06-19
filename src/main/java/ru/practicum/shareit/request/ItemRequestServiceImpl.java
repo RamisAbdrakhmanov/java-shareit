@@ -63,11 +63,6 @@ public class ItemRequestServiceImpl implements ItemRequestService {
                 .orElseThrow(() -> new NotFoundException("ItemRequest not found")), list);
     }
 
-    public ItemRequest getItemRequestFofCreateItem(Integer itemRequestId) {
-        return itemRequestRepository.findById(itemRequestId)
-                .orElseThrow(() -> new NotFoundException("ItemRequest not found"));
-    }
-
     @Transactional
     @Override
     public ItemRequestDto addItemRequest(ItemRequestDto itemRequestDto, Integer requesterId) {

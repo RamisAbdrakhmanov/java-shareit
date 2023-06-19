@@ -13,6 +13,7 @@ public class ItemRequestMapper {
 
     public ItemRequest toItemRequest(ItemRequestDto itemRequestDto, User requester) {
         return new ItemRequest(
+                null,
                 itemRequestDto.getDescription(),
                 requester,
                 LocalDateTime.now()

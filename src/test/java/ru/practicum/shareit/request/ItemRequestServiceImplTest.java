@@ -66,16 +66,6 @@ class ItemRequestServiceImplTest {
     }
 
     @Test
-    void getItemRequestFofCreateItemTest() {
-        when(itemRequestRepository.findById(anyInt())).thenReturn(Optional.of(itemRequest));
-
-        ItemRequest itemReq = itemRequestService.getItemRequestFofCreateItem(item.getId());
-
-        assertEquals(itemRequest, itemReq);
-
-    }
-
-    @Test
     void addItemRequestTest() {
         when(userRepository.findById(anyInt())).thenReturn(Optional.of(booker));
         when(itemRequestRepository.save(any())).thenReturn(itemRequest);
