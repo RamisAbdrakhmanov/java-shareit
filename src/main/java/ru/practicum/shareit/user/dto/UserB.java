@@ -6,5 +6,5 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class UserB {
-    Integer id;
+    private Integer id;
 }
