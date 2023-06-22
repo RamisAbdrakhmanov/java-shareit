@@ -1,10 +1,10 @@
-package ru.practicum.shareit.item.commet;
+package ru.practicum.shareit.item.comment;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingRepository;
-import ru.practicum.shareit.item.commet.dto.CommentDto;
+import ru.practicum.shareit.item.comment.dto.CommentDto;
 
 import javax.validation.ValidationException;
 import java.time.LocalDateTime;

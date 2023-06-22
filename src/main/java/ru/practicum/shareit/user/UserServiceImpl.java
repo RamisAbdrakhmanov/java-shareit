@@ -2,8 +2,8 @@ package ru.practicum.shareit.user;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.exception.ConflictException;
 import ru.practicum.shareit.exception.NotFoundException;
-import ru.practicum.shareit.exception.UserValidException;
 import ru.practicum.shareit.user.dto.UserDto;
 
 import java.util.List;
@@ -36,7 +36,7 @@ public class UserServiceImpl implements UserService {
             Optional<User> checkUser = repository.findByEmail(userDto.getEmail());
             if (checkUser.isPresent()) {
                 if (!Objects.equals(checkUser.get().getId(), userDto.getId())) {
-                    throw new UserValidException("email is busy");
+                    throw new ConflictException("Email is busy");
                 }
             }
             user.setEmail(userDto.getEmail());
@@ -47,11 +47,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUser(Integer userId) {
-        Optional<User> user = repository.findById(userId);
-        if (user.isEmpty()) {
-            throw new NotFoundException("User not found");
-        }
-        return user.get();
+        return repository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
     }
 
     @Override

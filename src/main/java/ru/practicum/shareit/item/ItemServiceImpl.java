@@ -1,61 +1,68 @@
 package ru.practicum.shareit.item;
 
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.Status;
-import ru.practicum.shareit.booking.dto.IBooking;
+import ru.practicum.shareit.booking.dto.BookingIt;
+import ru.practicum.shareit.common.MyPageRequest;
 import ru.practicum.shareit.exception.NotFoundException;
-import ru.practicum.shareit.exception.UserValidException;
-import ru.practicum.shareit.item.commet.Comment;
-import ru.practicum.shareit.item.commet.CommentMapper;
-import ru.practicum.shareit.item.commet.CommentRepository;
+import ru.practicum.shareit.item.comment.Comment;
+import ru.practicum.shareit.item.comment.CommentMapper;
+import ru.practicum.shareit.item.comment.CommentRepository;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemOwner;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.request.ItemRequest;
+import ru.practicum.shareit.request.ItemRequestRepository;
 import ru.practicum.shareit.user.User;
-import ru.practicum.shareit.user.UserService;
+import ru.practicum.shareit.user.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 
-@Slf4j
 @Service
 @AllArgsConstructor
 public class ItemServiceImpl implements ItemService {
 
     private ItemRepository itemRepository;
     private BookingRepository bookingRepository;
-    private UserService userService;
+    private UserRepository userRepository;
     private CommentRepository commentRepository;
+    private ItemRequestRepository itemRequestRepository;
 
     @Override
     public Item addItem(ItemDto itemDto, Integer userId) {
-        User user = userService.getUser(userId);
-        Item item = ItemMapper.toItem(itemDto, user);
+        User user = getUser(userId);
+        ItemRequest itemRequest =
+                itemDto.getRequestId() != null ? itemRequestRepository
+                        .findById(itemDto.getRequestId())
+                        .orElseThrow(() -> new NotFoundException("ItemRequest not found")) : null;
+        Item item = ItemMapper.toItem(itemDto, user, itemRequest);
         return itemRepository.save(item);
     }
 
     @Override
     public Item updateItem(ItemDto itemDto, Integer userId) {
-        Item item = itemRepository.getReferenceById(itemDto.getId());
+        Item item = getItemById(itemDto.getId());
+
+        if (!Objects.equals(item.getOwner().getId(), userId)) {
+            throw new NotFoundException("User dont have this item");
+        }
 
         if (itemDto.getAvailable() != null) {
             item.setAvailable(itemDto.getAvailable());
         }
         if (itemDto.getName() != null) {
-            checkValidOwnItem(item.getId(), userId);
             item.setName(itemDto.getName());
         }
         if (itemDto.getDescription() != null) {
-            checkValidOwnItem(item.getId(), userId);
             item.setDescription(itemDto.getDescription());
         }
         return itemRepository.save(item);
@@ -73,13 +80,13 @@ public class ItemServiceImpl implements ItemService {
         Item item = itemRepository.findById(itemId).orElseThrow(() -> new NotFoundException("Item not found"));
 
         LocalDateTime now = LocalDateTime.now();
-        IBooking last = null;
-        IBooking next = null;
+        BookingIt last = null;
+        BookingIt next = null;
         List<Comment> comments = commentRepository.findAllByItemId(item.getId());
         if (Objects.equals(item.getOwner().getId(), userId)) {
-            last = BookingMapper.toIBooking(bookingRepository
+            last = BookingMapper.toBookingIt(bookingRepository
                     .findFirstByItemIdAndStartBeforeAndStatusOrderByEndDesc(item.getId(), now, Status.APPROVED));
-            next = BookingMapper.toIBooking(bookingRepository
+            next = BookingMapper.toBookingIt(bookingRepository
                     .findFirstByItemIdAndStartAfterAndStatusOrderByStartAsc(item.getId(), now, Status.APPROVED));
         }
 
@@ -94,34 +101,27 @@ public class ItemServiceImpl implements ItemService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<ItemOwner> getItems(Integer userId) {
-        userService.getUser(userId);
-        List<Item> list = itemRepository.findAllByOwnerId(userId);
+    public List<ItemOwner> getItems(Integer userId, Integer from, Integer size) {
+        getUser(userId);
+        Pageable pageable = MyPageRequest.of(from, size);
+        List<Item> list = itemRepository.findAllByOwnerId(userId, pageable);
         return list.stream().map(item -> getItem(item.getId(), userId)).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
     @Override
-    public List<Item> searchItems(String substring) {
-        return itemRepository.findItemByNameAndDescription(substring);
+    public List<Item> searchItems(String substring, Integer from, Integer size) {
+        Pageable pageable = MyPageRequest.of(from, size);
+        return itemRepository.findItemByNameAndDescription(substring, pageable);
     }
 
     @Transactional(readOnly = true)
     @Override
     public Item getItemById(Integer itemId) {
-        Optional<Item> item = itemRepository.findById(itemId);
-        if (item.isEmpty()) {
-            throw new NotFoundException("Item not found");
-        }
-
-        return item.get();
+        return itemRepository.findById(itemId).orElseThrow(() -> new NotFoundException("Item not found"));
     }
 
-    private void checkValidOwnItem(Integer itemId, Integer userId) {
-        if (!Objects.equals(itemId, userId)) {
-            throw new UserValidException("User dont have this item");
-        }
+    private User getUser(Integer userId) {
+        return userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
     }
-
-
 }
