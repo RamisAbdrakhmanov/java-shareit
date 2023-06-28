@@ -15,7 +15,7 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 @Slf4j
 @Validated
-public class UserController{
+public class UserController {
 
     private final UserClient userClient;
 
@@ -40,7 +40,7 @@ public class UserController{
     @PatchMapping("/{userId}")
     public ResponseEntity<Object> updateUser(@RequestBody UserDto userDto, @PathVariable long userId) {
         log.info("Вызван метод updateUser");
-        return userClient.updateUser(userDto,userId);
+        return userClient.updateUser(userDto, userId);
     }
 
     @DeleteMapping("/{userId}")

@@ -11,7 +11,7 @@ import ru.practicum.shareit.client.BaseClient;
 import ru.practicum.shareit.user.dto.UserDto;
 
 @Service
-public class UserClient  extends BaseClient {
+public class UserClient extends BaseClient {
 
     private static final String API_PREFIX = "/users";
 
@@ -26,23 +26,23 @@ public class UserClient  extends BaseClient {
         );
     }
 
-    public ResponseEntity<Object> getUsers(){
+    public ResponseEntity<Object> getUsers() {
         return get(API_PREFIX);
     }
 
-    public ResponseEntity<Object> addUser(UserDto userDto){
+    public ResponseEntity<Object> addUser(UserDto userDto) {
         return post("", userDto);
     }
 
-    public ResponseEntity<Object> getUser(long userId){
-        return get("/"+userId);
+    public ResponseEntity<Object> getUser(long userId) {
+        return get("/" + userId);
     }
 
-    public ResponseEntity<Object> deleteUser(long userId){
-        return delete("/"+userId);
+    public ResponseEntity<Object> deleteUser(long userId) {
+        return delete("/" + userId);
     }
 
-    public ResponseEntity<Object> updateUser(UserDto userDto, long userId){
-        return patch("/"+userId,userDto);
+    public ResponseEntity<Object> updateUser(UserDto userDto, long userId) {
+        return patch("/" + userId, userDto);
     }
 }
