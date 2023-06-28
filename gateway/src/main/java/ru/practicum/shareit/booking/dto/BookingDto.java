@@ -14,12 +14,11 @@ import lombok.Data;
 @AllArgsConstructor
 public class BookingDto {
 
-	@NotNull
-	@FutureOrPresent
-	private LocalDateTime start;
-	@NotNull
-	@Future
-	private LocalDateTime end;
-	private Integer itemId;
-
+    @NotNull
+    @FutureOrPresent
+    private LocalDateTime start;
+    @NotNull
+    @Future
+    private LocalDateTime end;
+    private Integer itemId;
 }
