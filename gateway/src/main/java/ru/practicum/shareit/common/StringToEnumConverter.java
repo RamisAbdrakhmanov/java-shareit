@@ -1,8 +1,12 @@
 package ru.practicum.shareit.common;
 
+
+
+
 import org.springframework.core.convert.converter.Converter;
-import ru.practicum.shareit.booking.State;
-import ru.practicum.shareit.exception.ElementException;
+import ru.practicum.shareit.booking.dto.State;
+
+import javax.validation.ValidationException;
 
 
 public class StringToEnumConverter implements Converter<String, State> {
@@ -11,7 +15,7 @@ public class StringToEnumConverter implements Converter<String, State> {
         try {
             return State.valueOf(source.toUpperCase());
         } catch (IllegalArgumentException e) {
-            throw new ElementException("Unknown state: " + source);
+            throw new ValidationException("Unknown state: " + source);
         }
     }
 }
