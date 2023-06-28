@@ -1,7 +1,6 @@
 package ru.practicum.shareit.exception;
 
 import org.springframework.http.HttpStatus;
-;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -13,13 +12,13 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handlerEntityNotFoundException(final MethodArgumentTypeMismatchException e) {
+    public ErrorResponse handlerEntityNotFoundException(final MethodArgumentTypeMismatchException ignoredE) {
         return new ErrorResponse("Ошибка валидации");
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleMethodArgumentNotValidException(final MethodArgumentNotValidException e) {
+    public ErrorResponse handleMethodArgumentNotValidException(final MethodArgumentNotValidException ignoredE) {
         return new ErrorResponse("Ошибка валидации");
     }
 

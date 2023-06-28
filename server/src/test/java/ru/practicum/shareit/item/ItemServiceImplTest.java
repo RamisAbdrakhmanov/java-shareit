@@ -109,7 +109,7 @@ class ItemServiceImplTest {
     @Test
     void getItems() {
         when(userRepository.findById(anyInt())).thenReturn(Optional.of(booker));
-        when(itemRepository.findAllByOwnerId(anyInt(), any())).thenReturn(List.of(item));
+        when(itemRepository.findAllByOwnerIdOrderByIdAsc(anyInt(), any())).thenReturn(List.of(item));
         when(itemRepository.findById(anyInt())).thenReturn(Optional.of(item));
         when(commentRepository.findAllByItemId(anyInt())).thenReturn(List.of(comment));
         when(bookingRepository.findFirstByItemIdAndStartBeforeAndStatusOrderByEndDesc(anyInt(), any(), any()))

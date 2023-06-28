@@ -12,7 +12,7 @@ import java.util.Optional;
 @Repository
 public interface ItemRepository extends JpaRepository<Item, Pageable> {
 
-    List<Item> findAllByOwnerId(Integer userId, Pageable pageable);
+    List<Item> findAllByOwnerIdOrderByIdAsc(Integer userId, Pageable pageable);
 
     @Query("select it " +
             "from  Item as it " +

@@ -25,12 +25,12 @@ class ItemRepositoryTest {
     @Autowired
     private ItemRequestRepository itemRequestRepository;
 
-    private Pageable pageable = MyPageRequest.of(0, 20);
+    private final Pageable pageable = MyPageRequest.of(0, 20);
 
     @Test
     void findAllByOwnerIdTest() {
         Item itemGet = saveItem();
-        List<Item> list = itemRepository.findAllByOwnerId(itemGet.getOwner().getId(), pageable);
+        List<Item> list = itemRepository.findAllByOwnerIdOrderByIdAsc(itemGet.getOwner().getId(), pageable);
 
         assertEquals(list.get(0), itemGet);
     }
