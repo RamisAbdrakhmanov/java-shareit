@@ -26,6 +26,6 @@ public class CommentClient extends BaseClient {
     }
 
     public ResponseEntity<Object> addComment(CommentDto commentDto, long itemId, long authorId) {
-        return post(String.format("/%s/comment", itemId), authorId, commentDto);
+        return post("/" + itemId + "/comment", authorId, commentDto);
     }
 }

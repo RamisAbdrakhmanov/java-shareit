@@ -11,7 +11,7 @@ import ru.practicum.shareit.user.dto.UserDto;
 import javax.validation.Valid;
 
 @Controller
-@RequestMapping(path = "/bookings")
+@RequestMapping(path = "/users")
 @RequiredArgsConstructor
 @Slf4j
 @Validated

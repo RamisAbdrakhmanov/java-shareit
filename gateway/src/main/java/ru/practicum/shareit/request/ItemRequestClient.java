@@ -32,7 +32,7 @@ public class ItemRequestClient extends BaseClient {
                 "from", from,
                 "size", size
         );
-        return get("/all", requesterId, parameters);
+        return get("/all?from={from}&size={size}", requesterId, parameters);
     }
 
     public ResponseEntity<Object> getItemRequestsForRequester(long requesterId) {

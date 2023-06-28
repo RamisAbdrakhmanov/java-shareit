@@ -26,7 +26,7 @@ public class UserClient extends BaseClient {
     }
 
     public ResponseEntity<Object> getUsers() {
-        return get(API_PREFIX);
+        return get("");
     }
 
     public ResponseEntity<Object> addUser(UserDto userDto) {
