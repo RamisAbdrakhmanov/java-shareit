@@ -6,8 +6,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.common.MyPageRequest;
-import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ElementException;
+import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
@@ -25,6 +25,7 @@ public class BookingServiceImpl implements BookingService {
     private UserRepository userRepository;
     private ItemRepository itemRepository;
 
+    @Transactional(readOnly = true)
     @Override
     public Booking getBooking(Integer bookingId, Integer userId) {
         Booking booking = bookingRepository.findById(bookingId)
@@ -76,6 +77,7 @@ public class BookingServiceImpl implements BookingService {
         return bookingRepository.save(booking);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<Booking> getBookings(Integer from, Integer size, Integer userId, State state) {
         getUser(userId);
@@ -109,6 +111,7 @@ public class BookingServiceImpl implements BookingService {
         }
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<Booking> getBookingsOwner(Integer from, Integer size, Integer userId, State state) {
         getUser(userId);
