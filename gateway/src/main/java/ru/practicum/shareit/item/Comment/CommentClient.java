@@ -16,8 +16,7 @@ public class CommentClient extends BaseClient {
     private static final String API_PREFIX = "/items";
 
     @Autowired
-    public CommentClient
-            (@Value("${shareit-server.url}") String serverUrl, RestTemplateBuilder builder) {
+    public CommentClient(@Value("${shareit-server.url}") String serverUrl, RestTemplateBuilder builder) {
         super(
                 builder
                         .uriTemplateHandler(new DefaultUriBuilderFactory(serverUrl + API_PREFIX))
