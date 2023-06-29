@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static ru.practicum.shareit.common.Argument.HEADER_FOR_USER;
+
 @Slf4j
 @Validated
 @RestController
@@ -25,7 +27,7 @@ public class ItemController {
     private CommentService commentService;
 
     @GetMapping
-    public List<ItemOwner> getItems(@RequestHeader("X-Sharer-User-Id") Integer userId,
+    public List<ItemOwner> getItems(@RequestHeader(HEADER_FOR_USER) Integer userId,
                                     @RequestParam(defaultValue = "0") Integer from,
                                     @RequestParam(defaultValue = "20") Integer size) {
         log.info("Вызван метод getItems");
@@ -34,13 +36,13 @@ public class ItemController {
 
     @GetMapping("/{itemId}")
     public ItemOwner getItem(@PathVariable Integer itemId,
-                             @RequestHeader("X-Sharer-User-Id") Integer userId) {
+                             @RequestHeader(HEADER_FOR_USER) Integer userId) {
         log.info("Вызван метод getItem");
         return itemService.getItem(itemId, userId);
     }
 
     @PostMapping
-    public ItemDto addItem(@RequestHeader("X-Sharer-User-Id") Integer userId,
+    public ItemDto addItem(@RequestHeader(HEADER_FOR_USER) Integer userId,
                            @RequestBody ItemDto itemDto) {
         log.info("Вызван метод addItem");
         return ItemMapper.toItemDto(itemService.addItem(itemDto, userId));
@@ -48,7 +50,7 @@ public class ItemController {
 
     @PatchMapping("/{itemId}")
     public ItemDto updateItem(@PathVariable Integer itemId,
-                              @RequestHeader("X-Sharer-User-Id") Integer userId,
+                              @RequestHeader(HEADER_FOR_USER) Integer userId,
                               @RequestBody ItemDto itemDto) {
         log.info("Вызван метод updateItem");
         itemDto.setId(itemId);
@@ -78,7 +80,7 @@ public class ItemController {
     @PostMapping("/{itemId}/comment")
     public CommentDto addComment(@PathVariable Integer itemId,
                                  @RequestBody CommentDto commentDto,
-                                 @RequestHeader("X-Sharer-User-Id") Integer authorId) {
+                                 @RequestHeader(HEADER_FOR_USER) Integer authorId) {
         log.info("Вызван метод addComment");
         return CommentMapper.toCommentDto(commentService.addComment(itemId, commentDto, authorId));
     }

@@ -15,6 +15,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 
+import static ru.practicum.shareit.common.Argument.HEADER_FOR_USER;
+
 @Controller
 @RequestMapping(path = "/items")
 @RequiredArgsConstructor
@@ -26,7 +28,7 @@ public class ItemController {
     private final CommentClient commentClient;
 
     @GetMapping
-    public ResponseEntity<Object> getItems(@RequestHeader("X-Sharer-User-Id") long userId,
+    public ResponseEntity<Object> getItems(@RequestHeader(HEADER_FOR_USER) long userId,
                                            @RequestParam(defaultValue = "0") @PositiveOrZero Integer from,
                                            @RequestParam(defaultValue = "20") @Positive Integer size) {
         log.info("Вызван метод getItems");
@@ -35,13 +37,13 @@ public class ItemController {
 
     @GetMapping("/{itemId}")
     public ResponseEntity<Object> getItem(@PathVariable long itemId,
-                                          @RequestHeader("X-Sharer-User-Id") long userId) {
+                                          @RequestHeader(HEADER_FOR_USER) long userId) {
         log.info("Вызван метод getItem");
         return itemClient.getItem(itemId, userId);
     }
 
     @PostMapping
-    public ResponseEntity<Object> addItem(@RequestHeader("X-Sharer-User-Id") long userId,
+    public ResponseEntity<Object> addItem(@RequestHeader(HEADER_FOR_USER) long userId,
                                           @NotNull @Valid @RequestBody ItemDto itemDto) {
         log.info("Вызван метод addItem");
         return itemClient.addItem(userId, itemDto);
@@ -49,7 +51,7 @@ public class ItemController {
 
     @PatchMapping("/{itemId}")
     public ResponseEntity<Object> updateItem(@PathVariable long itemId,
-                                             @RequestHeader("X-Sharer-User-Id") long userId,
+                                             @RequestHeader(HEADER_FOR_USER) long userId,
                                              @RequestBody ItemDto itemDto) {
         log.info("Вызван метод updateItem");
         return itemClient.updateItem(itemId, userId, itemDto);
@@ -73,7 +75,7 @@ public class ItemController {
     @PostMapping("/{itemId}/comment")
     public ResponseEntity<Object> addComment(@PathVariable long itemId,
                                              @Valid @RequestBody CommentDto commentDto,
-                                             @RequestHeader("X-Sharer-User-Id") long authorId) {
+                                             @RequestHeader(HEADER_FOR_USER) long authorId) {
         log.info("Вызван метод addComment");
         return commentClient.addComment(commentDto, itemId, authorId);
     }
