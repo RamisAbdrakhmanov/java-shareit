@@ -8,10 +8,6 @@ import ru.practicum.shareit.user.dto.UserDto;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * TODO Sprint add-controllers.
- */
-
 @Slf4j
 @RestController
 @AllArgsConstructor
